@@ -47,7 +47,7 @@
     <plugin name="uk.co.workingedge.phonegap.plugin.launchnavigator" spec="2.1.0" source="pgb" />
      -->
     <!-- plugin per utilizzare le webintent - richieste ad applicazioni esterne -->
-    <gap:plugin name="net.tunts.webintent" />
+    <plugin name="WebIntent" value="com.borismus.webintent.WebIntent" />
 
     <!-- Core plugins -->
     <plugin name="cordova-plugin-battery-status" />
