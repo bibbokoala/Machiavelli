@@ -112,7 +112,8 @@
           document.write("</TABLE>");
           function callNavigator() {
             address = localStorage.getItem("latitudine") + "," + localStorage.getItem("longitudine") ;
-            window.location = "maps:daddr=" + address;
+            launchnavigator.navigate(address);
+            //window.location = "maps:daddr=" + address;
             /*
             window.plugins.webintent.startActivity({
               action: window.plugins.webintent.ACTION_VIEW,
