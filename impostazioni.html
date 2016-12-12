@@ -110,14 +110,20 @@
           document.write("<tr><td>VERSIONE SOFTWARE: </td><td>" + localStorage.getItem("version") +  "</td></tr>");
 
           document.write("</TABLE>");
+          function callNavigator() {
+            address = localStorage.getItem("latitudine") + "," + localStorage.getItem("longitudine") ;
+            window.location = "http://maps.google.com/?q=" + address;
+          }
           </script>
         </div> <!-- close <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main"> -->
 
         <div id="my_footer" class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 " >   
           <script>
-          address = localStorage.getItem("latitudine") + "," + localStorage.getItem("longitudine") ;
-          document.write('<a href="http://maps.google.com/?q="'+address+'Naviga verso indirizzo</a>');
+          document.write('<a href="http://maps.google.com/?q="+address');
           </script>
+          <button onclick='callNavigator()' type="button" class="btn btn-default btn-lg bottone" style="margin-bottom:10px;" > 
+            <span class="glyphicon glyphicon-map-marker pull-left" aria-hidden="true"></span>Naviga verso indirizzo
+          </button>
           <!--
           <center>
           <form id="impostaAjaxForm" >
