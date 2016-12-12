@@ -1,0 +1,260 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   <link href="css/bootstrap.min.css" rel="stylesheet">
+   <!-- CSS FOR TOGGLE LEFT MENU -->
+     <link href='http://fonts.googleapis.com/css?family=Exo+2:400,600,300,900' rel='stylesheet' type='text/css'>
+     <link href="css/navbar-static-top.css" rel="stylesheet">
+     <link rel="stylesheet" href="font-awesome/css/font-awesome.min.css">
+   <!-- END CSS FOR TOGGLE LEFT MENU -->
+   <link href="css/custom.css" rel="stylesheet">
+<script src="phonegap.js"></script>
+   <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script> -->
+   <script src="js/jquery.min.js"></script>
+   <!-- <script src="js/menu.js"></script>-->
+ <script type="text/javascript" charset="utf-8">
+    // Call onDeviceReady when Cordova is loaded.
+    // At this point, the document has loaded but cordova-1.8.1.js has not.
+    // When Cordova is loaded and talking with the native device,
+    // it will call the event `deviceready`.
+    function onLoad() {
+        document.addEventListener("deviceready", onDeviceReady, false);
+        //alert("onload");
+    }
+    // Cordova is loaded and it is now safe to make calls Cordova methods
+    function onDeviceReady() {
+        document.addEventListener("offline", onOffline, false);
+        document.addEventListener("online", onOnline, false);
+        if (device.model!=null)
+        {
+          localStorage.setItem("duuid", device.uuid);
+          localStorage.setItem("dmodel", device.model);
+          localStorage.setItem("dplatform", device.platform);
+          localStorage.setItem("dversion", device.version);
+        }
+        //alert("onDeviceReady");
+    }
+    // Handle the offline event
+    function onOffline() {
+      $("#offline-alert").alert();
+      $("#offline-alert").fadeTo(2000, 500).slideUp(500, function(){
+        $("#offline-alert").alert('close');
+      });   
+      //alert("Il dispositivo e' OffLine\nQuesta App richiede una connessione internet!");
+      //btn_login disabled
+      $('#btn_login').addClass( "disabled" );
+    }
+    // Handle the online event
+    function onOnline() {
+      $("#online-alert").alert();
+      $("#online-alert").fadeTo(2000, 500).slideUp(500, function(){
+        $("#online-alert").alert('close');
+      });   
+      //alert("Il dispositivo e' OnLine!");
+      //btn_login enabled!
+      $('#btn_login').removeClass( "disabled" );
+    }
+    // Handle the back browser button
+    document.addEventListener("backbutton", onBackKeyDown, false);
+    function onBackKeyDown() {
+      if (confirm("Chiudere l'applicazione?")) {
+        navigator.app.exitApp();
+      }
+    }
+
+</script>
+<script>
+//var db = openDatabase('GeoNavDB', '1.0', 'GeoNav App DB', 3 * 1024 * 1024);
+$.fn.serializeObject = function()
+{
+    var o = {};
+    var a = this.serializeArray();
+    $.each(a, function() {
+        if (o[this.name] !== undefined) {
+            if (!o[this.name].push) {
+                o[this.name] = [o[this.name]];
+            }
+            o[this.name].push(this.value || '"');
+        } else {
+            o[this.name] = this.value || '"';
+        }
+    });
+    return o;
+};
+  function onSuccess(data, status)
+  {
+    console.log("data.status: "+data.status);
+    console.log("data: "+ JSON.stringify(data));
+    localStorage.setItem("auth", data.auth);
+    localStorage.setItem("token", data.token);
+    localStorage.setItem("login", data.auth);
+    if (data.auth.localeCompare("OK")==0)
+    {
+       localStorage.setItem("link", "poi");
+       window.location = "ric_elemento.html";
+    }
+    else
+    {
+       window.location = "index.html";
+    }
+  }
+  function onError(data, status)
+  {
+    //var htmlString = "<p>ERRORE Login!</p>";
+    console.log("data.status: "+data.status);
+    console.log("data: "+ JSON.stringify(data));
+    localStorage.setItem("link", "menu");
+    localStorage.setItem("login", "KO");
+  }   
+  $(document).ready(function() {
+    $("#online-alert").hide();
+    $("#offline-alert").hide();
+
+    //IN CASO DI LOGIN VALIDO NON RIEFFETTUO IL LOGIN...
+    if (localStorage.getItem("auth") != null) {
+      var auth=localStorage.getItem("auth");
+      if (auth.localeCompare("OK")==0)
+      {
+        localStorage.setItem("link", "poi");
+        window.location = "ric_elemento.html";
+      }
+    }
+
+    //BOTTONE ACCEDI PER EFFETTUARE IL LOGIN:
+    $("#btn_login").click(function(){
+      console.log(callAjaxForm);
+      var formData = $("#callAjaxForm").serialize();
+      console.log(formData);
+      //var formData = JSON.stringify($('#callAjaxForm').serializeObject())
+      // TO DO: agganciare a formData i campi uuid ecc ecc [uuid, model, platform, version] 
+      //        letti dal dispositivo con il plugin <plugin name="cordova-plugin-device" spec="1.0.1" source="pgb" />
+      if (localStorage.getItem("duuid") != null) 
+      {
+        var uuid     = localStorage.getItem("duuid");
+        var model    = localStorage.getItem("dmodel");
+        var platform = localStorage.getItem("dplatform");
+        var version  = localStorage.getItem("dversion");
+        var parametri = formData + "&uuid=" + uuid + "&model=" + model + "&platform=" + platform + "&version=" + version;
+      }
+      else
+      {
+        var parametri = formData;
+      }
+      console.log(parametri);
+      localStorage.setItem("matricola", $("#matricola").val());
+      localStorage.setItem("password", $("#password").val());
+      //var url = "http://service.cloudmup.com/GOALocale/GeoNavLogin.php";
+      //var url = "http://surak/CCSApp/ccs_login.php";
+      var url = "http://2.35.153.229/CCSApp/ccs_login.php";
+      console.log(url);
+      $.ajax({
+        type: "GET",
+        url: url,
+        cache: false,
+        dataType: "jsonp",
+        data: parametri,
+        success: onSuccess,
+        error: onError
+      });
+      //return false;
+    });
+
+    $('#btn_exit').click(function() {
+      if (confirm("Chiudere l'applicazione?")) {
+        navigator.app.exitApp();
+      }
+    });
+
+    $( "#matricola" ).keydown(function( event ) {
+      if ( event.which == 13 ) {
+        event.preventDefault();
+        $( "#password" ).focus();
+      }
+      console.log("Handler for .keydown() called ");
+      console.log("event: "+event.which);
+    });
+
+    $( "#password" ).keydown(function( event ) {
+      if ( event.which == 13 ) {
+        event.preventDefault();
+        $("#btn_login").click();
+      }
+    });
+
+  });  
+</script>
+</head>
+<body onload="onLoad()">
+    <!-- Static navbar -->
+    <nav class="navbar navbar-default navbar-fixed-top gradienti">
+      <div class="container">
+        <div class="navbar-header">
+          <!-- solo per la pagina index.html NON ESISTE IL MENU ed il logo ha un margine di 40 pixel -->
+          <div class="navbar-header" style="line-height: 56px;" id="testata" >
+            <img src="pics/geonav.png" height="56px" align="left" id="logo_small" style="margin-left:40px;" />
+
+            <a id="btn_exit" type="button" class='.navbar-toggle pull-right' style="color: #004691;" >
+               <span class="glyphicon glyphicon-remove" aria-hidden="true" style="color: #004691;" ></span> CLOSE&nbsp;
+            </a>
+
+          </div>
+        </div>
+      </div>
+    </nav>
+    <!-- <div class="container-fluid" style="max-width: 540px;" id="fluido" > -->
+    <div class="container-fluid" id="fluido" >
+      <div class="row">
+        <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main" id="contenuto" >
+          <center>
+            <img src="pics/logo.png" height="112px" border=0 id="logo_big" /><br><br>
+          </center>
+          <form id="callAjaxForm">
+           <label for='matricola'>Utente</label>
+           <input type=text id='matricola' name='matricola' placeholder='Utente' class='form-control-custom' required='true' >
+           <br>
+
+                  <div class="alert alert-success" id="online-alert">
+                      <button type="button" class="close" data-dismiss="alert">x</button>
+                      Il dispositivo e' <strong>OnLine!</strong>
+                  </div>
+                  <div class="alert alert-danger" id="offline-alert">
+                      <button type="button" class="close" data-dismiss="alert">x</button>
+                      Il dispositivo e' <strong>OffLine!</strong><br>
+                      Questa App richiede una connessione internet.
+                  </div>
+
+           <label for='password'>Password</label>
+           <input type=password id='password' name='password' placeholder='Password' class='form-control-custom' required='true' >
+           <br>
+           <br><br><br>
+           <label for='chiaro'>Password in chiaro</label>
+           <input id='chiaro' class="pull-right" type="checkbox" value="checkbox" onchange="password_in_chiaro(this)" style="margin-left:1px;margin-top:5px;" />
+           <br>
+           <label for='cred'>Salva credenziali</label>
+           <input id='cred' class="pull-right" type="checkbox" value="checkbox" style="margin-left:1px;margin-top:5px;" />
+           <br><br>
+           <button id="btn_login" type="button" class='btn btn-primary btn-lg bottone' style="margin-bottom:10px;" >Accedi</button>
+           </form>
+        </div> <!-- close <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main"> -->
+      </div> <!-- close div row --> 
+    </div> <!-- close div container-fluid -->
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.min.js"></script>
+    <script>
+    function password_in_chiaro(checkbox)
+    {
+        if (checkbox.checked)
+        {
+            var password = document.getElementById("password");
+            password.type="text";
+        }
+        else
+        {
+            var password = document.getElementById("password");
+            password.type="password";
+        }
+    }
+    </script>
+<!-- <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBSOthkwq0sKfWCDOCUmnfSlzeUi72r7hg&signed_in=true&callback=initMap"></script> -->
+</body>
+</html>

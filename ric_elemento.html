@@ -1,0 +1,604 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   <link href="css/bootstrap.min.css" rel="stylesheet">
+
+   <!-- CSS FOR TOGGLE LEFT MENU -->
+     <link href='http://fonts.googleapis.com/css?family=Exo+2:400,600,300,900' rel='stylesheet' type='text/css'>
+     <link href="css/navbar-static-top.css" rel="stylesheet">
+     <link rel="stylesheet" href="font-awesome/css/font-awesome.min.css">
+   <!-- END CSS FOR TOGGLE LEFT MENU -->
+
+   <link href="css/custom.css" rel="stylesheet">
+   <link rel="stylesheet" href="css/bootstrap-slider.css" />
+   <script src="phonegap.js"></script>
+   <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script> -->
+   <script src="js/jquery.min.js"></script>
+   <!-- esempi di slider: http://seiyria.com/bootstrap-slider/ -->
+   <script src="js/bootstrap-slider.js"></script>
+   <script src="js/menu.js"></script>
+
+ <script type="text/javascript" charset="utf-8">
+    // Call onDeviceReady when Cordova is loaded.
+    // At this point, the document has loaded but cordova-1.8.1.js has not.
+    // When Cordova is loaded and talking with the native device,
+    // it will call the event `deviceready`.
+    function onLoad() {
+        document.addEventListener("deviceready", onDeviceReady, false);
+    }
+    // Cordova is loaded and it is now safe to make calls Cordova methods
+    function onDeviceReady() {
+        document.addEventListener("offline", onOffline, false);
+        document.addEventListener("online", onOnline, false);
+    }
+    // Handle the offline event
+    function onOffline() {
+      $("#offline-alert").alert();
+      $("#offline-alert").fadeTo(2000, 500).slideUp(500, function(){
+        $("#offline-alert").alert('close');
+      });   
+       //alert("Il dispositivo e' OffLine\nQuesta App richiede una connessione internet!");
+       $('#poi_lista').addClass( "disabled" );
+       $('#poi_mappa').addClass( "disabled" );
+       $('#pac-input').prop('disabled', true);
+       $('#qui').addClass( "disabled" );
+    }
+    // Handle the online event
+    function onOnline() {
+      $("#online-alert").alert();
+      $("#online-alert").fadeTo(2000, 500).slideUp(500, function(){
+        $("#online-alert").alert('close');
+      });   
+      //alert("Il dispositivo e' OnLine!");
+      $('#poi_lista').removeClass( "disabled" );
+      $('#poi_mappa').removeClass( "disabled" );
+      $('#pac-input').prop('disabled', false);
+      $('#qui').removeClass( "disabled" );
+    }
+    // Handle the back browser button
+    document.addEventListener("backbutton", onBackKeyDown, false);
+    function onBackKeyDown() {
+      if (confirm("Chiudere l'applicazione?")) {
+        navigator.app.exitApp();
+      }
+    }
+
+</script>
+
+<script>
+  $(document).ready(function() {
+    $("#online-alert").hide();
+    $("#offline-alert").hide();
+    $("#gps-off").hide();
+    /* IMPOSTO I SETTAGGI PRECEDENTI */
+    /* */
+    if (localStorage.getItem("poiType")!=null)
+    {
+       var poitype = localStorage.getItem("poiType");
+       //DEBUG alert(poitype);
+       var poi = poitype.split(",");
+       //var tipo = ["", "ppu", "apparato", "bts", "armadio", "terra", "aps", "sede", "distributore", "sito", "palo"];
+       var tipo = ["", "q_posti", "d_posti", "elettrico", "berlina"];
+       for (i=0; i<poi.length;i++)
+       {
+          var id = poi[i];
+          var nomepoi = tipo[id];
+          //DEBUG alert("id: "+id +" - nome: "+nomepoi);
+          $( 'input[name="'+nomepoi+'"]' ).prop( "checked", true );
+          $('#'+nomepoi).css('background-color','#DDDDDD');
+       }
+    }
+    /* */
+    if (localStorage.getItem("indirizzo")!=null)
+       $( "#pac-input" ).val(localStorage.getItem("indirizzo"));
+    if (localStorage.getItem("range")!=null)
+    {
+       showVal('rangeVal', localStorage.getItem("range"));
+       $('#range').slider('setValue', Number( localStorage.getItem("range") ) );
+    }
+    if (localStorage.getItem("risultati")!=null)
+    {
+       showVal('risultatiVal', localStorage.getItem("risultati"));
+       $('#risultati').slider('setValue', Number(localStorage.getItem("risultati") ) );
+    }
+    if (localStorage.getItem("nome_elemento")!=null)
+    {
+       var s = localStorage.getItem("nome_elemento");
+       //$( "#nome_elemento" ).val(localStorage.getItem("nome_elemento"));
+       //sostituisco il carattere + con lo spazio
+       var r = s.replace(/\+/g, " ");
+       //decodifico i caratteri dell'url
+       r=decodeURIComponent(r);
+       console.log("nome_elemento r="+r);
+       $( "#nome_elemento" ).val(r); 
+    }
+
+    function getParameters() {
+      var parameters = new Object();
+      parameters['nome_elemento'] = "";
+      parameters['range'] = "";
+      parameters['risultati'] = "";
+      var formDataSer = $("#elementoForm").serialize();
+      console.log("formDataSer: "+formDataSer);
+      //devo valorizzare la stringa poiType per la condizione di ricerca dei poi...
+      var poiType="";
+      //var tipologia = {ppu:1, apparato:2, bts:3, armadio:4, terra:5, aps:6, sede:7, distributore:8, sito:9, palo:10};
+      var tipologia = {q_posti:1, d_posti:2, elettrico:3, berlina:4};
+      if (formDataSer.length>1)
+      {   
+        var poiType="";
+        var res = formDataSer.split("&");
+        for (i=0; i<res.length;i++)
+        {
+          poi = res[i].split("=");
+          var nomepoi = poi[0];
+          var valore = poi[1];
+          var confronto = 'on';
+          //console.log("nomepoi: "+ nomepoi + " - valore: " + valore + " - confronto: " + confronto);
+          //console.info(valore);
+          if ( valore == "on" )
+          {
+            poi_index = tipologia[nomepoi];
+            if (i==(res.length-3)) // 3 perche ultimo + range e risultati
+              poiType += poi_index;
+            else
+              poiType += poi_index + ",";
+            //console.log(i + ") poiType" + poiType);
+          }
+          else
+          {
+            parameters[nomepoi] = valore;
+          }
+        }
+        //console.log("poiType: " + poiType);
+      }
+      parameters['poiType'] = poiType;
+      console.log("parameters: " + JSON.stringify(parameters) );
+      return parameters;
+    }
+    function saveListForPage(response, page) {
+      var lista = response;
+      var appoggio = JSON.parse(lista);
+      if (appoggio.length>0)
+        var metri = appoggio[0].distance;
+      else
+        var metri = 0;
+      localStorage.setItem("metri", metri);
+      localStorage.setItem("link", "poi");
+      localStorage.setItem("lista", lista);
+      if (page.localeCompare("vis_lista.html")==0)
+      {
+         localStorage.setItem("view", "lista");
+         var btn = $("#poi_lista");
+      }
+      else
+      {
+         localStorage.setItem("view", "mappa");
+         var btn = $("#poi_mappa");
+      }
+      btn.button('reset'); 
+      window.location = page;
+    }
+    function call(lat, lon, page, poiType, range, limit, name){
+      localStorage.setItem("page", page );
+      localStorage.setItem("poiType", poiType );
+      localStorage.setItem("range", range );
+      localStorage.setItem("risultati", limit );
+      localStorage.setItem("nome_elemento", name);
+      var xmlhttp = new XMLHttpRequest();
+//var url="http://surak/CCSApp/ccs_query.php?pin=test1&token=FAD4A66AB106FE&latitude=41.90&longitude=12.50&poiType=1,2,3,4&range=30&elements=100&name=609";
+var url="http://2.35.153.229/CCSApp/ccs_query.php?pin=test1&token=FAD4A66AB106FE&latitude="+lat+"&longitude="+lon+"&poiType="+poiType+"&range="+range+"&elements="+limit+"&name="+name;
+      console.log("url:"+url);
+      xmlhttp.onreadystatechange=function() {
+          //DEBUG alert("onreadystatechange");
+          if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+              //DEBUG alert("renderList");
+              saveListForPage(xmlhttp.responseText, page);
+          }
+      }
+      xmlhttp.open("GET", url, true);
+      xmlhttp.send();
+    }
+
+    $("#poi_lista").click(function(){
+      /* params: {"nome_elemento":"simone","range":"200","risultati":"20","poiType":"2,6,7"} */
+      var params = getParameters();
+      var ind = localStorage.getItem("indirizzo");
+      var lat = localStorage.getItem("latitudine");
+      var lon = localStorage.getItem("longitudine");
+      console.log("ind: "+ind+"- lat: "+lat+" - lon: "+lon+" - poiType: " + params['poiType']);
+      if ( (ind!=null) && (lat!=null) && (lon!=null) ) 
+      {
+        var btn = $(this);
+        btn.button('loading');
+        //function call(lat, lon, page, poiType, range, limit, name)
+        call(lat, lon, "vis_lista.html", params['poiType'], params['range'], params['risultati'], params['nome_elemento']);
+      }
+      else
+      {
+        alert("VALORIZZARE INDIRIZZO DI RICERCA!");
+        $( "#pac-input" ).css('border-color', '#E58E96');
+        $( "#pac-input" ).focus();
+      }
+    });
+    $("#poi_mappa").click(function(){
+      /* params: {"nome_elemento":"simone","range":"200","risultati":"20","poiType":"2,6,7"} */
+      var params = getParameters();
+      var ind = localStorage.getItem("indirizzo");
+      var lat = localStorage.getItem("latitudine");
+      var lon = localStorage.getItem("longitudine");
+      console.log("ind: "+ind+"- lat: "+lat+" - lon: "+lon+" - poiType: " + params['poiType']);
+      if ( (ind!=null) && (lat!=null) && (lon!=null) ) 
+      {
+         var btn = $(this);
+         btn.button('loading');
+        //function call(lat, lon, page, poiType, range, limit, name)
+         call(lat, lon, "vis_mappa.html", params['poiType'], params['range'], params['risultati'], params['nome_elemento']);
+      }
+      else
+      {
+        alert("VALORIZZARE INDIRIZZO DI RICERCA!");
+        $( "#pac-input" ).css('border-color', '#E58E96');
+        $( "#pac-input" ).focus();
+      }
+    });
+
+  });  
+</script>
+</head>
+<body onload="onLoad()">
+      <!-- Static navbar -->
+    <nav class="navbar navbar-default navbar-fixed-top gradienti">
+      <div class="container">
+        <div class="navbar-header">
+          <div id="bottone_menu" >
+
+      <!-- BUTTON FOR TOGGLE LEFT MENU -->
+      <button type="button" class="navbar-toggle" data-toggle="offcanvas" data-target=".sidebar-nav">
+       <span class="icon-bar" style="background-color: #004691;"></span>
+       <span class="icon-bar" style="background-color: #004691;"></span>
+       <span class="icon-bar" style="background-color: #004691;"></span>
+      </button>
+          </div>
+          <div class="navbar-header" style="line-height: 56px;" id="testata" >
+            <img src="pics/geonav.png" height="56px" align="left" id="logo_small" />
+          </div>
+
+        </div>
+    </nav>
+    <div class="container-fluid" id="fluido" >
+      <div class="row" >
+      <!-- sidebar LEFT MENU -->      <!-- sidebar -->
+      <div class="col-xs-6 col-sm-4 col-md-3 sidebar-offcanvas" >
+        <div id="prova" style="width:100%;" data-toggle="offcanvas" data-target=".sidebar-nav">
+          <ul data-spy="affix" data-offset-top="120" id="affix" class="nav nav-stacked" >
+            <li><a href="ric_elemento.html"> <i class="fa fa-eye"></i> CERCA ELEMENTO DI RETE</a></li>
+            <li><a href="calendario.html"> <i class="fa fa-calendar"></i> CALENDARIO</a></li>
+          </ul>
+          <ul id="footer_menu" data-spy="affix" data-offset-top="120" id="affix" class="nav nav-stacked" >
+              <li><p>FUNZIONI</p></li>
+              <li><a href="impostazioni.html"> <i class="fa fa-info-circle"></i> Info</a></li>
+              <li><a id="btn_logout"> <i class="fa fa-sign-out"></i> Logout</a></li>
+          </ul>
+        </div> <!-- chiude prova -->  
+      </div>
+      <!-- content -->
+      <div class="col-xs-12  col-sm-8 col-md-9 content">
+
+          <center>
+                  <form id="elementoForm">
+<!--
+                    <div class="input-group">
+                       <span class="input-group-addon" id="basic-addon1"><span class="glyphicon glyphicon-asterisk pull-left" aria-hidden="true"></span></span>
+                       <input id="nome_elemento" name="nome_elemento" type="text" class="form-control-custom" placeholder="Nome elemento..."  aria-describedby="basic-addon1" >
+                    </div><br style="line-height:10px;">
+-->
+                   <table border=0 width="100%"><tr><td width="90%">
+                    <div class="input-group">
+                       <span class="input-group-addon" id="basic-addon1"><span class="glyphicon glyphicon-search pull-left" aria-hidden="true"></span></span>
+                       <input id="pac-input" type="text" class="form-control-custom" placeholder="Indirizzo..."  aria-describedby="basic-addon1" required="required" >
+                    </div>
+                   </td>
+                   <td>&nbsp;</td>
+                   <td><a id="qui" onclick="getLocation()" type="button" class='btn btn-primary btn-lg bottone' >
+                    <!-- <span class="glyphicon glyphicon-map-marker pull-left" aria-hidden="true"></span>QUI&nbsp; -->
+                    <img src="pics/here.png" border=0 />
+                    </a>
+                   </td></tr>
+                   </table>
+
+                  <div class="alert alert-success" id="online-alert">
+                      <button type="button" class="close" data-dismiss="alert">x</button>
+                      Il dispositivo e' <strong>OnLine!</strong>
+                  </div>
+                  <div class="alert alert-danger" id="offline-alert">
+                      <button type="button" class="close" data-dismiss="alert">x</button>
+                      Il dispositivo e' <strong>OffLine!</strong><br>
+                      Questa App richiede una connessione internet.
+                  </div>
+                  <div class="alert alert-default" id="gps-off">
+                      <!--<button type="button" class="close" data-dismiss="alert">x</button>-->
+                      <img src="./pics/gps_loading.gif" border=0 width="100px"/><br>
+                      Attendere la connessione GPS
+                  </div>
+
+                    <table border=0 width="100%"><tr><td width="50%">
+                      <!-- vehicle_classes -->
+                      
+                    <label id="q_posti" class="checkbox form-control-custom text-left" >
+                      <input type="checkbox" name="q_posti" onChange="statecheck('q_posti', this)" style="margin-left:1px;margin-top:5px;" />
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Veicolo 4 posti<img src="pics/q_posti.png" class="pull-right" />
+                    </label>
+                      
+                    <label id="d_posti" class="checkbox form-control-custom text-left" >
+                      <input type="checkbox" name="d_posti" onChange="statecheck('d_posti', this)" style="margin-left:1px;margin-top:5px;" />
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Veicolo 2 posti<img src="pics/d_posti.png" class="pull-right" />
+                    </label>
+                      
+                    <label id="elettrico" class="checkbox form-control-custom text-left" >
+                      <input type="checkbox" name="elettrico" onChange="statecheck('elettrico', this)" style="margin-left:1px;margin-top:5px;" />
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Veicolo elettrico<img src="pics/elettrico.png" class="pull-right" />
+                    </label>
+                      
+                    <label id="berlina" class="checkbox form-control-custom text-left" >
+                      <input type="checkbox" name="berlina" onChange="statecheck('berlina', this)" style="margin-left:1px;margin-top:5px;" />
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Berlina<img src="pics/berlina.png" class="pull-right" />
+                    </label>
+                    
+<!--
+                    <label id="apparato" class="checkbox form-control-custom text-left" >
+                      <input type="checkbox" name="apparato" onChange="statecheck('apparato', this)" style="margin-left:1px;margin-top:5px;" />
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Apparato<img src="pics/apparato.png" class="pull-right" />
+                    </label>
+                    <label id="aps" class="checkbox form-control-custom text-left" >
+                      <input type="checkbox" name="aps" onchange="statecheck('aps', this)" style="margin-left:1px;margin-top:5px;" />
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;APS<img src="pics/aps.png" class="pull-right" />
+                    </label>
+                    <label id="armadio" class="checkbox form-control-custom text-left" >
+                      <input type="checkbox" name="armadio" onChange="statecheck('armadio', this)" style="margin-left:1px;margin-top:5px;" />
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Armadio<img src="pics/armadio.png" class="pull-right" />
+                    </label>
+                    <label id="bts" class="checkbox form-control-custom text-left" >
+                      <input type="checkbox" name="bts" onchange="statecheck('bts', this)" style="margin-left:1px;margin-top:5px;" />
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BTS<img src="pics/bts.png" class="pull-right" />
+                    </label>
+                    <label id="distributore" class="checkbox form-control-custom text-left" >
+                      <input type="checkbox" name="distributore" onchange="statecheck('distributore', this)" style="margin-left:1px;margin-top:5px;" />
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Distributore<img src="pics/distributore.png" class="pull-right" />
+                    </label>
+                  </td><td>
+                    <label id="palo" class="checkbox form-control-custom text-left" >
+                      <input type="checkbox" name="palo" onchange="statecheck('palo', this)" style="margin-left:1px;margin-top:5px;" />
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Palo<img src="pics/palo.png" class="pull-right" />
+                    </label>
+                    <label id="ppu" class="checkbox form-control-custom text-left" >
+                      <input type="checkbox" name="ppu" onchange="statecheck('ppu', this)" style="margin-left:1px;margin-top:5px;" />
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PPU<img src="pics/ppu.png" class="pull-right" />
+                    </label>
+                    <label id="sede" class="checkbox form-control-custom text-left" >
+                      <input type="checkbox" name="sede" onchange="statecheck('sede', this)" style="margin-left:1px;margin-top:5px;" />
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sede<img src="pics/sede.png" class="pull-right" />
+                    </label>
+                    <label id="sito" class="checkbox form-control-custom text-left" >
+                      <input type="checkbox" name="sito" onchange="statecheck('sito', this)" style="margin-left:1px;margin-top:5px;" />
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sito<img src="pics/sito.png" class="pull-right" />
+                    </label>
+                    <label id="terra" class="checkbox form-control-custom text-left" >
+                      <input type="checkbox" name="terra" onchange="statecheck('terra', this)" style="margin-left:1px;margin-top:5px;" />
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Terra<img src="pics/terra.png" class="pull-right" />
+                    </label>
+-->
+                  </td></tr></table>
+
+    <script>
+    function callGpsSettings() {
+      //var url = "ACTION_LOCATION_SOURCE_SETTINGS ";
+      var url = "android.settings.LOCATION_SOURCE_SETTINGS";
+      window.plugins.webintent.startActivity({
+          action: url
+        }, 
+        function() {
+          //alert('Prego abilitare Gps!')
+          $("#gps-off").fadeIn( "slow" );
+          $('#qui').addClass( "disabled" );
+        }, 
+        function() {alert('Fallita apertura Gps Settings!')}
+      );            
+    }
+    function onErrorGPS(error) {
+       //alert("time:"+time+" error:"+error);
+       //alert('code: '    + error.code    + ' ' + 'message: ' + error.message + ' ');
+      if (time<=5000)
+      {  
+        if (confirm("Gps non abilitato.\nL'app richiede il Gps attivo.\nVuoi attivarlo?")) {
+          callGpsSettings();
+        }
+      }  
+      $("#gps-off").fadeIn( "slow" );
+      $('#qui').addClass( "disabled" );
+    }
+    var config = {
+      enableHighAccuracy: true,
+      timeout: 2500
+    }
+    var c = 2500;
+    var interval = 0;
+    function getLocation() 
+    {
+      console.log("getLocation");
+      interval = setInterval(function() { checkGPS(); }, c);
+      //navigator.geolocation.getCurrentPosition(initAutocomplete, onErrorGPS, config);
+      console.log("END OF getCurrentPosition");
+    }
+    /***/
+    var time = 0;
+    function checkGPS() {
+      time=time+c;
+      if (time>60000)
+      {
+        clearInterval(interval);
+        console.log('<br />END - time elapsed: '+ time/1000+' seconds');
+        $('#qui').addClass( "disabled" );
+        $("#gps-off").hide();
+        alert("Problemi ricezione GPS\nrecarsi in un posto aperto\noppure scrivere manualmente l'indirizzo!");
+        $( "#pac-input" ).css('border-color', '#E58E96');
+        $( "#pac-input" ).focus();
+      }
+      console.log('<br />time elapsed: '+ time/1000+' seconds');
+      navigator.geolocation.getCurrentPosition(initAutocomplete, onErrorGPS, config);
+    }
+    /***/
+    function initAutocomplete(position) 
+    {
+      //alert("position: "+position);
+      console.log("initAutocomplete - position: "+position);
+      if (position==undefined) 
+      {
+        // Create the search box and link it to the UI element.
+        var input = document.getElementById('pac-input');
+        var searchBox = new google.maps.places.SearchBox(input);
+        searchBox.addListener('places_changed', function() 
+        {
+          var places = searchBox.getPlaces();
+          if (places.length == 0) {
+            return;
+          }
+          var bounds = new google.maps.LatLngBounds();
+          places.forEach(function(place) {
+            console.log("place.name: "+place.name);
+            console.log("place.geometry.location: "+place.geometry.location);
+            //x.innerHTML=place.name+" - "+place.geometry.location;
+            var lat = place.geometry.location.lat();
+            var lon = place.geometry.location.lng();
+            //console.log("lat: "+lat+" - lon: "+lon);
+            localStorage.setItem("indirizzo",place.name);
+            localStorage.setItem("latitudine",lat.toFixed(7));
+            localStorage.setItem("longitudine",lon.toFixed(7));
+            var indir = localStorage.getItem("indirizzo");
+            var latit = localStorage.getItem("latitudine");
+            var longi = localStorage.getItem("longitudine");
+            console.log("indir: "+indir+"- latit: "+latit+" - longi: "+longi);
+          });
+          //map.fitBounds(bounds);
+        });
+      }
+      else //è la vecchia showPosition
+      {
+        console.log("showPosition [called by getLocation]");
+        if (position.coords.latitude==null)  
+        {
+          $("#gps-off").fadeIn( "slow" );
+          $('#qui').addClass( "disabled" );
+          //alert("Prego Abilitare il GPS... ");
+          //callGpsSettings();
+        }
+        else
+        {
+          $("#gps-off").hide();
+          $('#qui').addClass( "enabled" );
+          clearInterval(interval);
+          localStorage.setItem("latitudine", position.coords.latitude);
+          localStorage.setItem("longitudine", position.coords.longitude);
+          var geocoder = new google.maps.Geocoder();
+          var latlng = {lat: parseFloat(position.coords.latitude), lng: parseFloat(position.coords.longitude)};
+          console.log("latlng: "+latlng);
+          geocoder.geocode({'location': latlng}, function(results, status) {
+            if (status === google.maps.GeocoderStatus.OK) 
+            {
+              var address = results[0].formatted_address;
+              console.log("Indirizzo: "+address);
+              localStorage.setItem("indirizzo", results[0].formatted_address);
+              console.log("results[0]: "+results[0].formatted_address);
+              console.log("results[1]: "+results[1].formatted_address);
+              console.log("results[2]: "+results[2].formatted_address);
+              console.log("results[3]: "+results[3].formatted_address);
+              /*
+              x.innerHTML = "Latitudine: " + localStorage.getItem("latitudine") + "<br>" + 
+                            "Longitudine: " + localStorage.getItem("longitudine") + "<br>" +
+                            "Indirizzo: " + localStorage.getItem("indirizzo");
+              */
+              $('#pac-input').val(results[0].formatted_address);
+            } 
+            else 
+            {
+              //x.innerHTML = "Geocoder failed due to: "+ status;
+              alert("ERRORE GPS... [" + status + "]");
+              //callGpsSettings();
+            }
+          });
+        }
+      }
+    }
+    </script>
+    <script async defer 
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBSOthkwq0sKfWCDOCUmnfSlzeUi72r7hg&signed_in=true&libraries=places&callback=initAutocomplete">
+    </script>
+
+<span style="color: #286090; font-size: 90%;" >&nbsp;&nbsp;Distanza: <span id="rangeVal" style="color: #286090;" >5</span> KM</span><br>
+<input id='range' name='range' type='text'  
+                  data-slider-min='2'  
+                  data-slider-max='30'  
+                  data-slider-step='1'  
+                  data-slider-value='5'
+                  onchange="showVal('rangeVal', this.value)" /> 
+<br><br>
+<span style="color: #286090; font-size: 90%;" >&nbsp;&nbsp;Elementi da visualizzare: <span id="risultatiVal"  style="color: #286090;" >20</span> </span><br>
+<input id='risultati' name='risultati' type='text'  
+                  data-slider-min='10'  
+                  data-slider-max='200'  
+                  data-slider-step='10'  
+                  data-slider-value='20'
+                  onchange="showVal('risultatiVal', this.value)" /> 
+<script>
+$("#range").slider();
+$("#risultati").slider();
+function showVal(id, newVal){
+  document.getElementById(id).innerHTML=newVal;
+}
+</script>
+<br><br>
+<!--
+         <table border=0 width="100%" ><tr>
+          <td width="50%">
+-->
+           <button id="poi_lista" type="button" class="btn btn-primary btn-lg bottone" > Visualizza Lista </button>
+           <br>
+           <br style="line-height:10px;">
+<!--
+         </td><td>
+-->
+           <button id="poi_mappa" type="button" class="btn btn-primary btn-lg bottone" > Visualizza Mappa </button>
+<!--
+         </td>
+         <tr></table>
+-->
+         </form>
+
+        </div> <!-- close <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main"> -->
+      </div> <!-- close div row --> 
+    </div> <!-- close div container-fluid -->
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.min.js"></script>
+    <!-- TOGGLE MENU -->
+    <script>
+      $(document).ready(function() {
+      $('[data-toggle=offcanvas]').click(function() {
+        $('.sidebar-offcanvas').toggleClass('active', 1000);
+      });
+    });
+    </script>
+    <script>
+    function statecheck(x, _this) {
+      var tipologia = {q_posti:1, d_posti:2, elettrico:3, berlina:4};
+      if (_this.checked) {
+        $('#'+x).css('background-color','#DDDDDD');
+        console.log(tipologia[x] + ") " + x + " cecked!");
+      } 
+      else  {
+        $('#'+x).css('background-color','#FFFFFF');
+        console.log(tipologia[x] + ") " + x + " NOT ceck!");
+      }
+    }
+    </script>
+  </body>
+</html>

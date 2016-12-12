@@ -1,0 +1,853 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   <link href="css/bootstrap.min.css" rel="stylesheet">
+
+   <!-- CSS FOR TOGGLE LEFT MENU -->
+     <link href='http://fonts.googleapis.com/css?family=Exo+2:400,600,300,900' rel='stylesheet' type='text/css'>
+     <link href="css/navbar-static-top.css" rel="stylesheet">
+     <link rel="stylesheet" href="font-awesome/css/font-awesome.min.css">
+   <!-- END CSS FOR TOGGLE LEFT MENU -->
+
+   <link href="css/custom.css" rel="stylesheet">
+   <link rel="stylesheet" href="css/bootstrap-slider.css" />
+   <script src="phonegap.js"></script>
+   <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script> -->
+   <script src="js/jquery.min.js"></script>
+   <!-- esempi di slider: http://seiyria.com/bootstrap-slider/ -->
+   <script src="js/bootstrap-slider.js"></script>
+   <script src="js/menu.js"></script>
+
+<script type="text/javascript" charset="utf-8">
+    // Call onDeviceReady when Cordova is loaded.
+    // At this point, the document has loaded but cordova-1.8.1.js has not.
+    // When Cordova is loaded and talking with the native device,
+    // it will call the event `deviceready`.
+    function onLoad() {
+        document.addEventListener("deviceready", onDeviceReady, false);
+        //alert("onload");
+    }
+    // Cordova is loaded and it is now safe to make calls Cordova methods
+    function onDeviceReady() {
+        document.addEventListener("offline", onOffline, false);
+        document.addEventListener("online", onOnline, false);
+        if (device.model!=null)
+        {
+          localStorage.setItem("duuid", device.uuid);
+          localStorage.setItem("dmodel", device.model);
+          localStorage.setItem("dplatform", device.platform);
+          localStorage.setItem("dversion", device.version);
+        }
+        //alert("onDeviceReady");
+    }
+</script>
+    <link href="fullcalendar/fullcalendar.css" rel="stylesheet" type="text/css"/>
+    <style>
+      .badge{margin-bottom:2px;width:180px;}
+      /* Background colors */
+      .bg-red,
+      .bg-yellow,
+      .bg-aqua,
+      .bg-blue,
+      .bg-light-blue,
+      .bg-green,
+      .bg-navy,
+      .bg-teal,
+      .bg-olive,
+      .bg-lime,
+      .bg-orange,
+      .bg-fuchsia,
+      .bg-purple,
+      .bg-maroon,
+      .bg-black {color: #f9f9f9 !important;}
+      .bg-gray {background-color: #eaeaec !important;}
+      .bg-black {background-color: #222222 !important;}
+      .bg-red {background-color: #f56954 !important;}
+      .bg-yellow {background-color: #f39c12 !important;}
+      .bg-aqua {background-color: #00c0ef !important;}
+      .bg-blue {background-color: #0073b7 !important;}
+      .bg-light-blue {background-color: #3c8dbc !important;}
+      .bg-green {background-color: #00a65a !important;}
+      .bg-navy {background-color: #001f3f !important;}
+      .bg-teal {background-color: #39cccc !important;}
+      .bg-olive {background-color: #dbff00 !important;}
+      .bg-lime {background-color: #01ff70 !important;}
+      .bg-orange {background-color: #ff851b !important;}
+      .bg-fuchsia {background-color: #f012be !important;}
+      .bg-purple {background-color: #932ab6 !important;}
+      .bg-maroon {background-color: #85144b !important;}
+      .bg-white {color: #222222 !important;background-color: #f9f9f9 !important;}
+      /*calendar color: */
+       .fc-day-header {background-color: #01ff70;}
+       .fc-prev-button {border-radius: 4px;}
+       .fc-today-button {border-radius: 4px;}
+       .fc-next-button {border-radius: 4px;}
+       .fc-month-button {border-radius: 4px;}
+       .fc-agendaWeek-button {border-radius: 4px;}
+       .fc-agendaDay-button {border-radius: 4px;}
+       .fc-past {background-color: #DDD;}
+       .fc-today {background-color: #FFFF80;}
+       .fc-future {background-color: #FFF;}
+    </style>
+
+    <script src="fullcalendar/lib/jquery.min.js" type="text/javascript"></script>
+    <script src="fullcalendar/lib/jquery-ui.custom.min.js" type="text/javascript"></script>
+    <script src="fullcalendar/lib/moment.min.js" type="text/javascript"></script>
+    <script src="fullcalendar/fullcalendar.js" type="text/javascript"></script>
+    <script src="fullcalendar/lang-all.js" type="text/javascript"></script>
+
+<link href="css/jquery.datetimepicker.css" rel="stylesheet" type="text/css"/>
+  <script src="js/bootstrap.min.js"></script>  
+  <script src="js/jquery-ui.js"></script>
+  <script src="js/jquery.datetimepicker.full.min.js" type="text/javascript"></script>
+<!-- DOCUMENTATIONS AND EXAMPLES: http://xdsoft.net/jqplugins/datetimepicker/ -->
+  <script src="js/moment_with_locales.js"></script>
+  <script>
+  console.log("ELEMENTI DI NAVIGAZIONE:");
+  console.log("matricola: "+localStorage.getItem("matricola"));
+  console.log("password: "+localStorage.getItem("password"));
+  console.log("auth: "+localStorage.getItem("auth"));
+  console.log("token: "+localStorage.getItem("token"));
+  console.log("login: "+localStorage.getItem("login"));
+  console.log("link: "+localStorage.getItem("link"));
+
+  $( function() {
+
+    $('#start_date').datetimepicker({
+       format:'Y-m-d H:i',
+       minDate: 0,
+       minTime: 0,
+       step: 15,
+       minTime:'08:00',
+       maxTime:'18:00',
+       onChangeDateTime:function(dp,$input){
+          console.log("start_date onchange value: " + $input.val());
+          $('#start_date').val($input.val());
+       }
+    });
+    $('#end_date').datetimepicker({
+       format:'Y-m-d H:i',
+       minDate: 0,
+       minTime: 0,
+       step: 15,
+       minTime:'08:00',
+       maxTime:'22:00',
+       onChangeDateTime:function(dp,$input){
+          console.log("end_date onchange value: " + $input.val());
+          $('#end_date').val($input.val());
+       }
+    });
+
+    $('#upd_start_date').datetimepicker({
+       format:'Y-m-d H:i',
+       minDate: 0,
+       minTime: 0,
+       step: 15,
+       minTime:'08:00',
+       maxTime:'18:00',
+       onChangeDateTime:function(dp,$input){
+          console.log("upd_start_date onchange value: " + $input.val());
+          $('#upd_start_date').val($input.val());
+       }
+    });
+    $('#upd_end_date').datetimepicker({
+       format:'Y-m-d H:i',
+       minDate: 0,
+       minTime: 0,
+       step: 15,
+       minTime:'08:00',
+       maxTime:'22:00',
+       onChangeDateTime:function(dp,$input){
+          console.log("upd_end_date onchange value: " + $input.val());
+          $('#upd_end_date').val($input.val());
+       }
+    });
+
+  });
+  </script>
+<script>
+  /* ESERCIZIO: */
+  var remote_url = "http://2.35.153.229/CCSApp/ccs_get_pren.php";
+  /* SVILUPPO
+  var remote_url = "http://surak/CCSApp/ccs_get_pren.php";
+  */
+  var matricola = localStorage.getItem("matricola");
+  $.ajax({
+    url: remote_url,
+        type: 'POST', // Send post data
+        data: 'matricola=' + matricola,
+        async: false,
+        success: function(s){
+          obj_events = s;
+          console.log(JSON.stringify(obj_events));
+        }
+  });
+
+  $(document).ready(function() {
+
+    $( "#depotStartId" ).change(function() {
+      //DEBUG alert( "Handler for depotStartId.change() called." );
+      $( "#depotEndId" ).val($( "#depotStartId" ).val());
+    });
+
+    $( "#upd_depotStartId" ).change(function() {
+      //DEBUG alert( "Handler for upd_depotStartId.change() called." );
+      $( "#upd_depotEndId" ).val($( "#upd_depotStartId" ).val());
+    });
+
+    $('#btn_exit').click(function() {
+      if (confirm("Chiudere l'applicazione?")) {
+        navigator.app.exitApp();
+      }
+    });
+
+
+    $("#btn_del_pren").click(function(){
+      console.log("btn_del_pren");
+      var booking_id = $("#booking_id").val();
+      //alert("booking_id: " + booking_id);
+      if ( (booking_id==null)||
+           (booking_id.localeCompare("")==0) )
+      {
+        return false;
+      }
+      var formData = $("#form_upd_pren").serialize();
+      console.log(formData);
+      /* ESERCIZIO: */
+      var url = "http://2.35.153.229/CCSApp/ccs_del_pren.php";
+      /* SVILUPPO
+      var url = "http://surak/CCSApp/ccs_del_pren.php";
+      */
+      $.ajax({
+        url: url,
+            type: 'POST', // Send post data
+            data: formData,
+            async: false,
+            success: function(s){
+              var result_del = s;
+              console.log(JSON.stringify(result_del));
+              setTimeout(function(){ window.location = "calendario.html"; }, 1500);
+            }
+      });
+
+    });
+
+    $("#btn_upd_pren").click(function(){
+      console.log("btn_upd_pren");
+      var booking_id = $("#booking_id").val();
+      //alert("booking_id: " + booking_id);
+      if ( (booking_id==null)||
+           (booking_id.localeCompare("")==0) )
+      {
+        return false;
+      }      
+      var a = moment($("#upd_start_date").val(),'YYYY-MM-DD hh:mm');
+      var b = moment($("#upd_end_date").val(),'YYYY-MM-DD hh:mm');
+      var diffHours = b.diff(a, 'hours');
+      //alert(diffHours);
+      if(diffHours<=1){
+        $("#upd_start_date").css('background-color', 'red');
+        $("#upd_end_date").css('background-color', 'red');
+        return false;
+      }
+      var formData = $("#form_upd_pren").serialize();
+      console.log(formData);
+      /* ESERCIZIO: */
+      var url = "http://2.35.153.229/CCSApp/ccs_upd_pren.php";
+      /* SVILUPPO
+      var url = "http://surak/CCSApp/ccs_upd_pren.php";
+      */
+      $.ajax({
+        url: url,
+        type: 'POST', // Send post data
+        data: formData,
+        async: false,
+        success: function(s){
+          var result_upd = s;
+          console.log(JSON.stringify(result_upd));
+          setTimeout(function(){ window.location = "calendario.html"; }, 1500);
+        }
+      });
+
+    });
+
+    $("#btn_save_new_pren").click(function(){
+      console.log("btn_save_new_pren");
+      var depotStartId = $("#depotStartId").val();
+      //alert("depotStartId: " + depotStartId);
+      if ( (depotStartId==null)||
+           (depotStartId.localeCompare("")==0) )
+      {
+        $("#depotStartId").css('background-color', 'red');
+        return false;
+      }
+      var a = moment($("#start_date").val(),'YYYY-MM-DD hh:mm');
+      var b = moment($("#end_date").val(),'YYYY-MM-DD hh:mm');
+      var diffHours = b.diff(a, 'hours');
+      //alert(diffHours);
+      if(diffHours<=1){
+        $("#start_date").css('background-color', 'red');
+        $("#end_date").css('background-color', 'red');
+        return false;
+      }
+      var formData = $("#form_new_pren").serialize();
+      console.log(formData);
+      //alert(formData);
+      /* ESERCIZIO: */
+      var url = "http://2.35.153.229/CCSApp/ccs_ins_pren.php";
+      /* SVILUPPO
+      var url = "http://surak/CCSApp/ccs_ins_pren.php";
+      */
+      $.ajax({
+        url: url,
+            type: 'POST', // Send post data
+            data: formData,
+            async: false,
+            success: function(s){
+              var result_insert = s;
+              console.log(JSON.stringify(result_insert));
+              //$('#new_event').modal('hide');
+              setTimeout(function(){ window.location = "calendario.html"; }, 1500);
+            }
+      });
+
+    });
+
+    function getPrenDetails(prenID){
+      /* ESERCIZIO: */
+      var url = "http://2.35.153.229/CCSApp/ccs_get_pren_details.php";
+      /* SVILUPPO
+      var url = "http://surak/CCSApp/ccs_get_pren_details.php";
+      */
+      //alert("prenID: " + prenID);
+      $.ajax({
+        url: url,
+            type: 'POST', // Send post data
+            data: 'id_pren='+prenID,
+            async: false,
+            success: function(s){
+              obj_details = s;
+              console.log(JSON.stringify(obj_details));
+            }
+      });
+    }
+
+    $('#calendar').fullCalendar({
+        theme: true,
+        lang: 'it',
+        height: 650,
+        header: {
+            left: 'prev today next',
+            center: 'title',
+            right: 'month agendaWeek agendaDay'
+        },
+        buttonText: {
+            prev: 'Prev',
+            next: 'Next'
+        },
+        //defaultDate: '2015-01-20',
+        selectable: true,
+        //selectHelper: true,
+        selectOverlap: function (event) {
+            return event.rendering != 'background';
+        },
+      //events: obj_events,
+
+      dayClick: function(date, jsEvent, view) {
+            //date contiene il giorno cliccato sul calendario nel formato: Wed Nov 30 2016 00:00:00 GMT+0000
+            var Time_ClickNuovoPNR;
+            Time_ClickNuovoPNR = moment();
+            var currentdate = new Date();
+            var currentHours = currentdate.getHours();
+            currentHours = ("0" + currentHours).slice(-2);
+            //aggiungo due minuti alla data inizio prenotazione
+            currentdate.setMinutes(currentdate.getMinutes() + 2)
+            var currentMin = currentdate.getMinutes();
+            currentMin = ("0" + currentMin).slice(-2);
+            var enddate = new Date ( currentdate );
+            //aggiungo due ore alla data fine prenotazione
+            enddate.setHours ( currentdate.getHours() + 2 );
+            var endHours = enddate.getHours();
+            endHours = ("0" + endHours).slice(-2);
+            var endMin = enddate.getMinutes();
+            endMin = ("0" + endMin).slice(-2);
+            if ((Time_ClickNuovoPNR.startOf('day').diff(date.startOf('day'),'minutes')) <= 0)
+            {         
+               //$(this).css('background-color', 'orange');
+               $('#start_date').val(date.format('YYYY-MM-DD HH:mm:ss'));
+               $('#end_date').val(date.format('YYYY-MM-DD HH:mm:ss'));
+               $('#utilizzatore').val(localStorage.getItem("matricola"));
+               $('#start_date').val(date.format("YYYY-MM-DD " + currentHours + ":" + currentMin ) );
+               $('#end_date').val(date.format("YYYY-MM-DD " + endHours + ":" + endMin ) );
+               if (date>currentdate){           
+                 //$(this).css('background-color', 'green');
+                 $('#start_date').val(date.format("YYYY-MM-DD 08:00") );
+                 $('#end_date').val(date.format("YYYY-MM-DD 10:00") );
+               }
+               $('#new_event').modal();
+            }
+        }, //FINE dayClick
+
+      eventClick: function(calEvent, jsEvent, view) {
+        /*
+        $(this).css('border-color', 'black');
+        console.log("calEvent title: " + calEvent.title);
+        $('#event_details_title').html(calEvent.title);
+        console.log("calEvent id prenotazione: " + calEvent.id);
+        $('#event_details_id').html(calEvent.id);
+        console.log("calEvent start: " + calEvent.start.format('YYYY-MM-DD HH:mm:ss'));
+        $('#event_details_start').html(calEvent.start.format('YYYY-MM-DD HH:mm:ss'));
+        console.log("calEvent end..: " + calEvent.end.format('YYYY-MM-DD HH:mm:ss'));
+        $('#event_details_end').html(calEvent.end.format('YYYY-MM-DD HH:mm:ss'));
+        */
+        getPrenDetails(calEvent.id);
+        var i;
+        for(i = 0; i < obj_details.length; i++) {
+          var fk_vehicle_code = obj_details[i].fk_vehicle_code;
+          $('#event_details_objects').html(fk_vehicle_code);
+          var status = obj_details[i].status;
+          $('#event_details_status').html(status);
+          var html_text = "<span class='glyphicon glyphicon-calendar'></span>" + 
+                          " Modifica Prenotazione <b>PNR " + 
+                          calEvent.id 
+                          + "</b> <span style='font-size:12px;border-radius:10px;background-color:"+calEvent.backgroundColor+";color:"+calEvent.textColor+";' > " 
+                          + "&nbsp;" + status 
+                          + "&nbsp;</span>";
+          $('#titolo_upd_modal').html(html_text);
+          var fk_depot_id_start = obj_details[i].fk_depot_id_start;
+          $('#upd_depotStartId').val(fk_depot_id_start);
+          var fk_depot_id_end = obj_details[i].fk_depot_id_end;
+          $('#upd_depotEndId').val(fk_depot_id_end);
+          var datetime_start = obj_details[i].datetime_start;
+          $('#upd_start_date').val(datetime_start);
+          var datatime_end = obj_details[i].datatime_end;
+          $('#upd_end_date').val(datatime_end);
+          var fk_vehicle_class_id = obj_details[i].fk_vehicle_class_id;
+          $('#upd_vehicleType').val(fk_vehicle_class_id);
+          var fk_vehicle_code = obj_details[i].fk_vehicle_code;
+          $('#upd_veic_disp').val(fk_vehicle_code);
+          var fk_utilizer_user_id = obj_details[i].fk_utilizer_user_id;
+          $('#upd_utilizzatore').val(fk_utilizer_user_id);
+          var fk_reason_id = obj_details[i].fk_reason_id;
+          $('#upd_motivoUtilizzo').val(fk_reason_id);
+          var fk_route_type = obj_details[i].fk_route_type;
+          $('#upd_tipoPercorso').val(fk_route_type);
+          var path_length = obj_details[i].path_length;
+          $('#upd_pathlen').val(path_length);
+          $('#booking_id').val(calEvent.id);
+          if (status.localeCompare("appins")==0){
+             //$("#btn_del_pren").css("display","block");
+          }
+          else{
+             $("#btn_del_pren").css("display","none");
+          }
+          if( (status.localeCompare("appins")==0) ||
+            (status.localeCompare("INSERITA")==0) ||
+            (status.localeCompare("DA APPROVARE")==0) ){
+             //$("#btn_upd_pren").css("display","block");
+          }
+          else{
+             $("#btn_upd_pren").css("display","none");
+          }
+        }
+        $('#event_details').modal();
+      }  //FINE eventClick
+
+      ,dateFormat: 'YYYY-MM-DD'
+      ,timeFormat: 'H:mm'
+
+    });  /* close fullCalendar */
+
+//RENDERIZZO GLI EVENTI SUL CALENDARIO:
+    for(i = 0; i < obj_events.length; i++) {
+      console.log("id: " + obj_events[i].id);
+      console.log("title: " + obj_events[i].title);
+      console.log("start: " + obj_events[i].start);
+      console.log("end: " + obj_events[i].end);
+      var status = obj_events[i].status;
+      console.log("status: " + status);
+      var backgroundColor = "#EECCDD";
+      var textColor = "#000";
+      if ( (status.localeCompare("CANCELLATA")==0) ||
+           (status.localeCompare("appdel")==0) ||
+           (status.localeCompare("MANCATO PICKUP")==0) ||
+           (status.localeCompare("MANCATA RICONSEGNA")==0) )
+      {
+          backgroundColor = "#f56954";
+          textColor = "#FFF";
+      }
+      if ( (status.localeCompare("IN USO")==0) )
+      {
+          backgroundColor = "#00a65a";
+          textColor = "#FFF";
+      }
+      if ( (status.localeCompare("ATTESA PICKUP")==0) )
+      {
+          backgroundColor = "#00c0ef";
+      }
+      if ( (status.localeCompare("ATTESA RICONSEGNA")==0) )
+      {
+          backgroundColor = "#01ff70";
+      }
+      if ( (status.localeCompare("RITARDO RICONSEGNA")==0) )
+      {
+          backgroundColor = "#dbff00";
+      }
+      if ( (status.localeCompare("RICONSEGNATA")==0) )
+      {
+          backgroundColor = "#f39c12";
+      }
+      if ( (status.localeCompare("PRENOTATA")==0) ||
+           (status.localeCompare("appins")==0) )
+      {
+          backgroundColor = "#001f3f";
+          textColor = "#FFF";
+      }
+      $('#calendar').fullCalendar('renderEvent', {
+          "id": obj_events[i].id, 
+          "title": obj_events[i].title,
+          "start": obj_events[i].start,
+          "end": obj_events[i].end ,
+          "allDay": false,
+          "backgroundColor": backgroundColor,
+          "textColor": textColor,
+          "borderColor": "#333" 
+        },true);
+    }
+
+  }); /* close document ready */
+
+</script>
+
+<style>
+  body {
+    margin: 40px 10px;
+    padding: 0;
+    font-family: "Lucida Grande",Helvetica,Arial,Verdana,sans-serif;
+    font-size: 14px;
+  }
+  #calendar {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+</style>
+</head>
+<body onload="onLoad()">
+      <!-- Static navbar -->
+    <nav class="navbar navbar-default navbar-fixed-top gradienti">
+      <div class="container">
+        <div class="navbar-header">
+          <div id="bottone_menu" >
+
+      <!-- BUTTON FOR TOGGLE LEFT MENU -->
+      <button type="button" class="navbar-toggle" data-toggle="offcanvas" data-target=".sidebar-nav">
+       <span class="icon-bar" style="background-color: #004691;"></span>
+       <span class="icon-bar" style="background-color: #004691;"></span>
+       <span class="icon-bar" style="background-color: #004691;"></span>
+      </button>
+          </div>
+          <div class="navbar-header" style="line-height: 56px;" id="testata" >
+            <img src="pics/geonav.png" height="56px" align="left" id="logo_small" />
+          </div>
+        </div>
+    </nav>
+    <div class="container-fluid" id="fluido" >
+      <div class="row" >
+      <!-- sidebar LEFT MENU -->      <!-- sidebar -->
+      <div class="col-xs-6 col-sm-4 col-md-3 sidebar-offcanvas" >
+        <div id="prova" style="width:100%;" data-toggle="offcanvas" data-target=".sidebar-nav">
+          <ul data-spy="affix" data-offset-top="120" id="affix" class="nav nav-stacked" >
+            <li><a href="ric_elemento.html"> <i class="fa fa-eye"></i> CERCA ELEMENTO DI RETE</a></li>
+            <li><a href="calendario.html"> <i class="fa fa-calendar"></i> CALENDARIO</a></li>
+            <li>
+              <div style="padding:20px;">
+                <label>Legenda:</label><br>
+                <small class="badge bg-navy"><font color="white">PRENOTATA</font></small><br>
+                <small class="badge bg-aqua"><font color="black">ATTESA PICKUP</font></small><br>
+                <small class="badge bg-green"><font color="white">IN USO</font></small><br>
+                <small class="badge bg-lime"><font color="black">ATTESA RICONSEGNA</font></small><br>
+                <small class="badge bg-olive"><font color="black">RITARDO RICONSEGNA</font></small><br>
+                <small class="badge bg-yellow"><font color="black">RICONSEGNATA</font></small><br>
+                <small class="badge bg-red"><font color="white">CANCELLATA</font></small><br>
+                <small class="badge bg-red"><font color="white">MANCATO PICKUP</font></small><br>
+                <small class="badge bg-red"><font color="white">MANCATA RICONSEGNA</font></small>
+            </div>
+            </li>
+          </ul>
+          <ul id="footer_menu_cal" data-spy="affix" data-offset-top="120" id="affix" class="nav nav-stacked" >
+              <li><p>FUNZIONI</p></li>
+              <li><a href="impostazioni.html"> <i class="fa fa-info-circle"></i> Info</a></li>
+              <li><a id="btn_logout"> <i class="fa fa-sign-out"></i> Logout</a></li>
+          </ul>
+        </div> <!-- chiude prova -->  
+      </div>
+      <!-- content -->
+      <div class="col-xs-12  col-sm-8 col-md-9 content">
+        <div class="col-lg-12" id="contenuto" >
+          <div id='calendar' style="margin-top: 20px;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
+
+<style>
+.table_pren td{
+  padding:5px;
+}
+</style>
+
+  <!-- Modal -->
+  <div class="modal fade" id="new_event" role="dialog">
+    <div class="modal-dialog">
+      <form class="form" id="form_new_pren" name="form_new_pren" >  
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title"><span class="glyphicon glyphicon-calendar"></span> Nuova Prenotazione</h4>
+        </div>
+        <div class="modal-body">
+        <table class='table_pren' width="100%" >
+          <tr>
+            <td width="50%">
+              <label for='depotStartId' >Sede di partenza <font color=red>*</font> </label>
+              <select required id="depotStartId" name="depotStartId" class="form-control" >
+                <option value="">Seleziona ...</option>
+                <option value="0">TEST</option>
+                <option value="1540">NERVIANO</option>
+              </select>
+            </td>
+            <td width="50%">
+              <label for='date_start' >Data di partenza <font color=red>*</font> </label>
+                <input type="text" class="form-control pull-right" id="start_date" name="start_date"/>
+              <!--
+              <div class="input-group" id="startCal">
+                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+              </div>
+              -->
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <label for='depotEndId' >Sede di riconsegna </label>
+              <select id="depotEndId" name="depotEndId" READONLY class="form-control">
+                <option value="">Seleziona ...</option>
+                <option value="0">TEST</option>
+                <option value="1540">NERVIANO</option>
+              </select>
+            </td>
+            <td>
+              <label for='date_end' >Data di riconsegna <font color=red>*</font> </label>
+                <input type="text" class="form-control pull-right" id="end_date" name="end_date"/>
+              <!--
+              <div class="input-group" id="endCal">
+                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+              </div>
+              -->
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <label for='vehicleType' >Classe veicolo </label>
+              <select id="vehicleType" name="vehicleType" class="form-control">
+                <option value="1">Veicolo 4 posti</option>
+                <option value="2">Veicolo 2 posti</option>
+                <option value="3">Veicolo elettrico</option>
+                <option value="4">Berlina</option>
+              </select>
+            </td>
+            <td>
+              <label for='veic_disp' >Veicolo disponibile </label>
+              <input id='veic_disp' name='veic_disp' type="text" READONLY class="form-control"></input>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <label for='utilizzatore' >Utilizzatore </label>
+              <input id="utilizzatore" name="utilizzatore" type="text" READONLY class="form-control"></select>
+            </td>
+            <td>
+              <label for="motivoUtilizzo" >Motivo utilizzo </label>
+              <select id="motivoUtilizzo" name="motivoUtilizzo" class="form-control">
+                <option value="">Seleziona ...</option>
+                <option value="1">Servizio</option>
+                <option value="2">Riunione</option>
+                <option value="3">Progettazione/Esercizio Impianti</option>
+                <option value="4">Docenza</option>
+                <option value="5">Visita Clienti</option>
+                <option value="6">Convegno</option>
+                <option value="7">Formazione</option>
+                <option value="8">Altro</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <label for="tipoPercorso" >Tipo percorso </label>
+              <select id="tipoPercorso" name="tipoPercorso" class="form-control">
+                <option value="">Seleziona ...</option>
+                <option value="1">Autostrada</option>
+                <option value="2">Urbano</option>
+                <option value="4">Extra urbano</option>
+                <option value="5">Misto</option>
+              </select>
+            </td>
+            <td>
+              <label for='pathlen' >Chilometri previsti </label>
+              <input id="pathlen" name="pathlen" type="text" class="form-control" value="0" />
+            </td>
+          </tr>
+        </table>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-warning pull-left" data-dismiss="modal">
+            <span class="glyphicon glyphicon-remove"></span> Annulla
+          </button>
+          <button type="button" class="btn btn-primary" id="btn_save_new_pren" data-dismiss="modal">
+            <span class="glyphicon glyphicon-ok"></span> Invia
+          </button>
+        </div>
+      </div>
+      </form>
+    </div>
+  </div>
+
+
+  <!-- Modal -->
+  <div class="modal fade" id="event_details" role="dialog">
+    <div class="modal-dialog">
+      <form class="form" id="form_upd_pren" name="form_upd_pren" >  
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title" id="titolo_upd_modal" ></h4>
+        </div>
+        <div class="modal-body">
+        <!--
+          <div id='details'></div>
+          ID PRENOTAZIONE: <span id='event_details_id' ></span><br>
+          DATA INIZIO....: <span id='event_details_start' ></span><br>
+          DATA FINE......: <span id='event_details_end' ></span><br>
+          DETTAGLI.......: <span id='event_details_objects' ></span><br>
+          STATO.......: <span id='event_details_status' ></span><br>
+        -->
+        <table class='table_pren' width="100%" >
+          <tr>
+            <td width="50%">
+              <label for='upd_depotStartId' >Sede di partenza <font color=red>*</font> </label>
+              <select required id="upd_depotStartId" name="depotStartId" class="form-control" >
+                <option value="">Seleziona ...</option>
+                <option value="0">TEST</option>
+                <option value="1540">NERVIANO</option>
+              </select>
+            </td>
+            <td width="50%">
+              <label for='upd_start_date' >Data di partenza <font color=red>*</font> </label>
+                <input type="text" class="form-control pull-right" id="upd_start_date" name="start_date"/>
+              <!--
+              <div class="input-group" id="upd_startCal">
+                <span class="input-group-addon" style="cursor: pointer;"><span class="glyphicon glyphicon-calendar"></span></span>
+              </div>
+              -->
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <label for='upd_depotEndId' >Sede di riconsegna </label>
+              <select id="upd_depotEndId" name="depotEndId" READONLY class="form-control">
+                <option value="">Seleziona ...</option>
+                <option value="0">TEST</option>
+                <option value="1540">NERVIANO</option>
+              </select>
+            </td>
+            <td>
+              <label for='upd_end_date' >Data di riconsegna <font color=red>*</font> </label>
+                <input type="text" class="form-control pull-right" id="upd_end_date" name="end_date"/>
+              <!--
+              <div class="input-group" id="upd_endCal">
+                <span class="input-group-addon" style="cursor: pointer;"><span class="glyphicon glyphicon-calendar"></span></span>
+              </div>
+              -->
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <label for='upd_vehicleType' >Classe veicolo </label>
+              <select id="upd_vehicleType" name="vehicleType" class="form-control">
+                <option value="1">Veicolo 4 posti</option>
+                <option value="2">Veicolo 2 posti</option>
+                <option value="3">Veicolo elettrico</option>
+                <option value="4">Berlina</option>
+              </select>
+            </td>
+            <td>
+              <label for='upd_veic_disp' >Veicolo disponibile </label>
+              <input id='upd_veic_disp' name='veic_disp' type="text" READONLY class="form-control"></input>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <label for='upd_utilizzatore' >Utilizzatore </label>
+              <input id="upd_utilizzatore" name="utilizzatore" type="text" READONLY class="form-control"></select>
+            </td>
+            <td>
+              <label for='upd_motivoUtilizzo' >Motivo utilizzo </label>
+              <select id="upd_motivoUtilizzo" name="motivoUtilizzo" class="form-control">
+                <option value="">Seleziona ...</option>
+                <option value="1">Servizio</option>
+                <option value="2">Riunione</option>
+                <option value="3">Progettazione/Esercizio Impianti</option>
+                <option value="4">Docenza</option>
+                <option value="5">Visita Clienti</option>
+                <option value="6">Convegno</option>
+                <option value="7">Formazione</option>
+                <option value="8">Altro</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <label for='upd_tipoPercorso' >Tipo percorso </label>
+              <select id="upd_tipoPercorso" name="tipoPercorso" class="form-control">
+                <option value="">Seleziona ...</option>
+                <option value="1">Autostrada</option>
+                <option value="2">Urbano</option>
+                <option value="4">Extra urbano</option>
+                <option value="5">Misto</option>
+              </select>
+            </td>
+            <td>
+              <label for='upd_pathlen' >Chilometri previsti </label>
+              <input id="upd_pathlen" name="pathlen" type="text" class="form-control" value="0" />
+            </td>
+          </tr>
+        </table>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-warning pull-left" data-dismiss="modal">
+            <span class="glyphicon glyphicon-remove"></span> Annulla
+          </button>
+          <input type="hidden" id="booking_id" name="booking_id" value="" />
+          <button type="button" class="btn btn-danger" id="btn_del_pren" data-dismiss="modal">
+            <span class="glyphicon glyphicon-cancel"></span> Cancella
+          </button>
+          <button type="button" class="btn btn-primary" id="btn_upd_pren" data-dismiss="modal">
+            <span class="glyphicon glyphicon-pencil"></span> Modifica
+          </button>
+        </div>
+      </div>
+      </form>
+    </div>
+  </div>
+
+    <!-- TOGGLE MENU -->
+    <script>
+      $(document).ready(function() {
+      $('[data-toggle=offcanvas]').click(function() {
+        $('.sidebar-offcanvas').toggleClass('active', 1000);
+      });
+    });
+    </script>

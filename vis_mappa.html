@@ -1,0 +1,152 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   <link href="css/bootstrap.min.css" rel="stylesheet">
+
+   <!-- CSS FOR TOGGLE LEFT MENU -->
+     <link href='http://fonts.googleapis.com/css?family=Exo+2:400,600,300,900' rel='stylesheet' type='text/css'>
+     <link href="css/navbar-static-top.css" rel="stylesheet">
+     <link rel="stylesheet" href="font-awesome/css/font-awesome.min.css">
+   <!-- END CSS FOR TOGGLE LEFT MENU -->
+
+   <link href="css/custom.css" rel="stylesheet">
+<style>
+#map {
+    width: 100%;
+    }
+</style>
+<script src="phonegap.js"></script>
+   <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script> -->
+   <script src="js/jquery.min.js"></script>
+   <script src="js/menu.js"></script>
+ <script type="text/javascript" charset="utf-8">
+    // Call onDeviceReady when Cordova is loaded.
+    // At this point, the document has loaded but cordova-1.8.1.js has not.
+    // When Cordova is loaded and talking with the native device,
+    // it will call the event `deviceready`.
+    function onLoad() {
+        document.addEventListener("deviceready", onDeviceReady, false);
+    }
+    // Cordova is loaded and it is now safe to make calls Cordova methods
+    function onDeviceReady() {
+        document.addEventListener("offline", onOffline, false);
+    }
+    // Handle the offline event
+    function onOffline() {
+       alert("Il dispositivo e' OffLine\nQuesta App richiede una connessione internet!");
+    }
+    // Handle the back browser button
+    document.addEventListener("backbutton", onBackKeyDown, false);
+    function onBackKeyDown() {
+      window.location.href = 'ric_elemento.html';
+    }
+    function prenotazioneDiretta(){  
+      //depotStartId=225&start_date=2016-12-17+08%3A00&depotEndId=225&end_date=2016-12-17+10%3A00&vehicleType=1&veic_disp=&utilizzatore=admin&motivoUtilizzo=1&tipoPercorso=2&pathlen=0
+      var dt_part = moment().format('YYYY-MM-DD HH:mm');
+      var dt_ricon = moment(dt_part).add(2, 'hours').format('YYYY-MM-DD HH:mm');
+      var parametri ="depotStartId="+$('#depot_id').val()+"&start_date="+dt_part+"&depotEndId="+$('#depot_id').val()+"&end_date="+dt_ricon+"&vehicleType="+$('#vehicle_type').val()+"&veic_disp="+$('#vehicle_code').val()+"&utilizzatore="+localStorage.getItem("matricola")+"&motivoUtilizzo="+$('#motivoUtilizzo').val()+"&tipoPercorso="+$('#tipoPercorso').val()+"&pathlen="+$('#pathlen').val();  
+      //DEBUG alert("PARAMETRI: "+parametri);
+      var url = "http://2.35.153.229/CCSApp/ccs_ins_pren.php";
+      $.ajax({
+        url: url,
+            type: 'POST', // Send post data
+            data: parametri,
+            async: false,
+            success: function(s){
+              var result_insert = s;
+              console.log(JSON.stringify(result_insert));
+              //$('#new_event').modal('hide');
+              setTimeout(function(){ window.location = "calendario.html"; }, 1500);
+            }
+      });
+    }
+</script>
+</head>
+<body>
+      <!-- Static navbar -->
+    <nav class="navbar navbar-default navbar-fixed-top gradienti">
+      <div class="container">
+        <div class="navbar-header">
+          <div id="bottone_menu" >
+
+      <!-- BUTTON FOR TOGGLE LEFT MENU -->
+      <button type="button" class="navbar-toggle" data-toggle="offcanvas" data-target=".sidebar-nav">
+       <span class="icon-bar" style="background-color: #004691;"></span>
+       <span class="icon-bar" style="background-color: #004691;"></span>
+       <span class="icon-bar" style="background-color: #004691;"></span>
+      </button>
+          </div>
+          <div class="navbar-header" style="line-height: 56px;" id="testata" >
+            <img src="pics/geonav.png" height="56px" align="left" id="logo_small" />
+
+            <a href="vis_lista.html" type="button" class='.navbar-toggle pull-right' style="color: #004691;" >
+               <span class="glyphicon glyphicon-list" aria-hidden="true" style="color: #004691;"></span> LISTA&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            </a>
+
+          </div>
+        </div>
+    </nav>
+    <div class="container-fluid" id="fluido" >
+      <div class="row">
+      <!-- sidebar LEFT MENU -->      <!-- sidebar -->
+      <div class="col-xs-6 col-sm-4 col-md-3 sidebar-offcanvas" >
+        <div id="prova" style="width:100%;" data-toggle="offcanvas" data-target=".sidebar-nav">
+          <ul data-spy="affix" data-offset-top="120" id="affix" class="nav nav-stacked" >
+            <li><a href="ric_elemento.html"> <i class="fa fa-eye"></i> CERCA ELEMENTO DI RETE</a></li>
+            <li><a href="calendario.html"> <i class="fa fa-calendar"></i> CALENDARIO</a></li>
+          </ul>
+          <ul id="footer_menu" data-spy="affix" data-offset-top="120" id="affix" class="nav nav-stacked" >
+              <li><p>FUNZIONI</p></li>
+              <li><a href="impostazioni.html"> <i class="fa fa-info-circle"></i> Info</a></li>
+              <li><a id="btn_logout"> <i class="fa fa-sign-out"></i> Logout</a></li>
+          </ul>
+        </div> <!-- chiude prova -->  
+      </div>
+      <!-- content -->
+      <div class="col-xs-12  col-sm-8 col-md-9 content">
+
+        <div id="map"></div>
+
+      </div> <!-- class="col-xs-12  col-sm-8 col-md-9 content" -->
+      </div> <!-- close div row --> 
+    </div> <!-- close div container-fluid -->
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.min.js"></script>
+    <!-- TOGGLE MENU -->
+    <script>
+      $(document).ready(function() {
+      $('[data-toggle=offcanvas]').click(function() {
+        $('.sidebar-offcanvas').toggleClass('active', 1000);
+      });
+    });
+    </script>
+    <script>
+    function statecheck(x, _this) {
+       if (_this.checked) {
+          $('#'+x).css('background-color','#bff0a1');
+       } 
+       else  {
+          $('#'+x).css('background-color','#ffffff');
+       }
+    }
+    </script>
+
+
+<script src="fullcalendar/lib/moment.min.js" type="text/javascript"></script>
+<script src="js/maps_functions.js"></script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBSOthkwq0sKfWCDOCUmnfSlzeUi72r7hg&signed_in=true&callback=initMap"></script>
+<script>
+  function NavigaVerso(lat, lon) {
+    address = lat + "," + lon ;
+    //alert("address: "+address);
+    console.log("address: "+address);
+    window.plugins.webintent.startActivity({
+      action: window.plugins.webintent.ACTION_VIEW,
+      url: 'geo:0,0?q=' + address}, 
+      function() {alert('Indirizzo inviato al Navigatore...')}, 
+      function() {alert('Fallita apertura Navigatore!')}
+    );           
+  }
+</script>
+  </body>
+</html>
