@@ -54,6 +54,7 @@
             async: false,
             success: function(s){
               var result_insert = s;
+              //DEBUG alert(JSON.stringify(result_insert));
               console.log(JSON.stringify(result_insert));
               //$('#new_event').modal('hide');
               setTimeout(function(){ window.location = "calendario.html"; }, 1500);

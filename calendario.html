@@ -445,9 +445,13 @@
             (status.localeCompare("INSERITA")==0) ||
             (status.localeCompare("DA APPROVARE")==0) ){
              //$("#btn_upd_pren").css("display","block");
+             $("#details").html("");
+             $("#details").css("display","none");
           }
           else{
              $("#btn_upd_pren").css("display","none");
+             $("#details").html("<img src='http://2.35.153.229/CCSApp/QRCODES/" + calEvent.id + "' />");
+             $("#details").css("display","block");
           }
         }
         $('#event_details').modal();
@@ -724,6 +728,7 @@
           <h4 class="modal-title" id="titolo_upd_modal" ></h4>
         </div>
         <div class="modal-body">
+          <div id='details'></div>
         <!--
           <div id='details'></div>
           ID PRENOTAZIONE: <span id='event_details_id' ></span><br>
