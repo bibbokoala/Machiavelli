@@ -450,8 +450,14 @@
           }
           else{
              $("#btn_upd_pren").css("display","none");
-             $("#details").html("<img src='http://2.35.153.229/CCSApp/QRCODES/" + calEvent.id + "' />");
-             $("#details").css("display","block");
+             if( (status.localeCompare("ASSEGNATA")==0) ||
+                 (status.localeCompare("ATTESA PICKUP")==0) ||
+                 (status.localeCompare("IN USO")==0) ){
+                 //$("#details").html("<img src='http://2.35.153.229/CCSApp/QRCODES/" + calEvent.id + "' />");
+                 //MAURIZIO MI HA CHIESTO DI METTERE UN QRCODE FISSO!!!
+                 $("#details").html("<img src='http://2.35.153.229/CCSApp/QRCODES/80105154331719.png' />");
+                 $("#details").css("display","block");
+             }
           }
         }
         $('#event_details').modal();
