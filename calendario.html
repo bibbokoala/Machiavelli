@@ -441,7 +441,8 @@
           else{
              $("#btn_del_pren").css("display","none");
           }
-          if( (status.localeCompare("appins")==0) ||
+          if( 
+            //comentato x demo maurizio: (status.localeCompare("appins")==0) ||
             (status.localeCompare("INSERITA")==0) ||
             (status.localeCompare("DA APPROVARE")==0) ){
              //$("#btn_upd_pren").css("display","block");
@@ -451,6 +452,8 @@
           else{
              $("#btn_upd_pren").css("display","none");
              if( (status.localeCompare("ASSEGNATA")==0) ||
+                 //aggiunta appins x demo maurizio:
+                 (status.localeCompare("appins")==0) ||
                  (status.localeCompare("ATTESA PICKUP")==0) ||
                  (status.localeCompare("IN USO")==0) ){
                  //$("#details").html("<img src='http://2.35.153.229/CCSApp/QRCODES/" + calEvent.id + "' />");
