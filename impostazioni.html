@@ -131,10 +131,21 @@
     <script src="js/bootstrap.min.js"></script>
     <!-- TOGGLE MENU -->
     <script>
-      $(document).ready(function() {
+    $(document).ready(function() {
       $('[data-toggle=offcanvas]').click(function() {
         $('.sidebar-offcanvas').toggleClass('active', 1000);
       });
+
+
+      ble.isEnabled(
+          function() {
+              alert("Bluetooth is enabled");
+          },
+          function() {
+              alert("Bluetooth is *not* enabled");
+          }
+      );
+
     });
     </script>
 </body>

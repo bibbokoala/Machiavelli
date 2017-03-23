@@ -187,7 +187,9 @@
       localStorage.setItem("nome_elemento", name);
       var xmlhttp = new XMLHttpRequest();
 //var url="http://surak/CCSApp/ccs_query.php?pin=test1&token=FAD4A66AB106FE&latitude=41.90&longitude=12.50&poiType=1,2,3,4&range=30&elements=100&name=609";
-var url="http://2.35.153.229/CCSApp/ccs_query.php?pin=test1&token=FAD4A66AB106FE&latitude="+lat+"&longitude="+lon+"&poiType="+poiType+"&range="+range+"&elements="+limit+"&name="+name;
+//var url="http://2.35.153.229/CCSApp/ccs_query.php?pin=test1&token=FAD4A66AB106FE&latitude="+lat+"&longitude="+lon+"&poiType="+poiType+"&range="+range+"&elements="+limit+"&name="+name;
+var url="http://192.168.1.5/CCSApp/ccs_query.php?pin=test1&token=FAD4A66AB106FE&latitude="+lat+"&longitude="+lon+"&poiType="+poiType+"&range="+range+"&elements="+limit+"&name="+name;
+
       console.log("url:"+url);
       xmlhttp.onreadystatechange=function() {
           //DEBUG alert("onreadystatechange");

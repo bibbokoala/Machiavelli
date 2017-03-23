@@ -91,7 +91,8 @@ $.fn.serializeObject = function()
     if (data.auth.localeCompare("OK")==0)
     {
        localStorage.setItem("link", "poi");
-       window.location = "ric_elemento.html";
+       //window.location = "ric_elemento.html";
+       window.location = "mappa.html";
     }
     else
     {
@@ -116,9 +117,16 @@ $.fn.serializeObject = function()
       if (auth.localeCompare("OK")==0)
       {
         localStorage.setItem("link", "poi");
-        window.location = "ric_elemento.html";
+        //window.location = "ric_elemento.html";
+        window.location = "mappa.html";
       }
     }
+
+    //BOTTONE ACCEDI PER EFFETTUARE IL LOGIN:
+    $("#btn_primo").click(function(){
+      //DEBUG alert("btn_primo");
+      window.location = "primo.html";
+    });
 
     //BOTTONE ACCEDI PER EFFETTUARE IL LOGIN:
     $("#btn_login").click(function(){
@@ -145,7 +153,8 @@ $.fn.serializeObject = function()
       localStorage.setItem("password", $("#password").val());
       //var url = "http://service.cloudmup.com/GOALocale/GeoNavLogin.php";
       //var url = "http://surak/CCSApp/ccs_login.php";
-      var url = "http://2.35.153.229/CCSApp/ccs_login.php";
+      //var url = "http://2.35.153.229/CCSApp/ccs_login.php";
+      var url = "http://192.168.1.5/CCSApp/ccs_login.php";
       console.log(url);
       $.ajax({
         type: "GET",
@@ -194,8 +203,8 @@ $.fn.serializeObject = function()
             <!--<img src="pics/geonav.png" height="56px" align="left" id="logo_small" style="margin-left:40px;" />-->
             <img src="pics/logo.png" height="50px" align="left" id="logo_small" style="margin-left:40px;" />
 
-            <a id="btn_exit" type="button" class='.navbar-toggle pull-right' style="color: #004691;" >
-               <span class="glyphicon glyphicon-remove" aria-hidden="true" style="color: #004691;" ></span> CLOSE&nbsp;
+            <a id="btn_exit" type="button" class='.navbar-toggle pull-right' style="color: #FFF;" >
+               <span class="glyphicon glyphicon-remove" aria-hidden="true" style="color: #FFF;" ></span>&nbsp;&nbsp;&nbsp;
             </a>
 
           </div>
@@ -207,11 +216,11 @@ $.fn.serializeObject = function()
       <div class="row">
         <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main" id="contenuto" >
           <center>
-            <img src="pics/logo.png" height="112px" border=0 id="logo_big" /><br><br>
+            <!--<img src="pics/logo.png" width='100%' border=0 id="logo_big" style='max-width:835px;' /><br><br>-->
           </center>
           <form id="callAjaxForm">
-           <label for='matricola'>Utente</label>
-           <input type=text id='matricola' name='matricola' placeholder='Utente' class='form-control-custom' required='true' >
+           <!-- <label for='matricola'>Utente</label> -->
+           <input type=text id='matricola' name='matricola' placeholder='user' class='form-control-custom' required='true' >
            <br>
 
                   <div class="alert alert-success" id="online-alert">
@@ -224,18 +233,20 @@ $.fn.serializeObject = function()
                       Questa App richiede una connessione internet.
                   </div>
 
-           <label for='password'>Password</label>
-           <input type=password id='password' name='password' placeholder='Password' class='form-control-custom' required='true' >
+           <!-- <label for='password'>Password</label> -->
+           <input type=password id='password' name='password' placeholder='password' class='form-control-custom' required='true' >
            <br>
-           <br><br><br>
-           <label for='chiaro'>Password in chiaro</label>
-           <input id='chiaro' class="pull-right" type="checkbox" value="checkbox" onchange="password_in_chiaro(this)" style="margin-left:1px;margin-top:5px;" />
-           <br>
-           <label for='cred'>Salva credenziali</label>
-           <input id='cred' class="pull-right" type="checkbox" value="checkbox" style="margin-left:1px;margin-top:5px;" />
+           <input id='chiaro' type="checkbox" value="checkbox" onchange="password_in_chiaro(this)" style="margin-left:1px;margin-top:5px;" />
+           <label for='chiaro'>password in chiaro</label>
            <br><br>
-           <button id="btn_login" type="button" class='btn btn-primary btn-lg bottone' style="margin-bottom:10px;" >Accedi</button>
+           <button id="btn_login" type="button" class='btn btn-success btn-lg bottone' style="margin-bottom:10px;" >login</button>
            </form>
+           <button id="btn_primo" type="button" class='btn btn-danger btn-lg bottone' style="margin-bottom:10px;" >primo accesso</button>
+           <br>
+           <button id='btn_lost' class='btn btn-link pull-right' />password dimenticata?</button>
+           <br><br>
+           <input id='cred' type="checkbox" value="checkbox" style="margin-left:1px;margin-top:5px;" />
+           <label for='cred'>ricorda credenziali</label>
         </div> <!-- close <div class="col-sm-12 col-sm-offset-0 col-md-12 col-md-offset-0 main"> -->
       </div> <!-- close div row --> 
     </div> <!-- close div container-fluid -->

@@ -56,11 +56,25 @@
       }
     }
 
+
+
+
+
+
+
+/******************** PER ORA LO COMMENTO DA RIATTIVARE PRIMA DELLA COMPILAZIONE
     if (localStorage.getItem("matricola") == null) {
        console.log("matricola is null! BACK TO INDEX!!!");
        window.location.href = 'index.html';
        //document.location.reload(true);
     }
+******************************************/
+
+
+
+
+
+
 
     //RISOLUZIONE DELLO SCHERMO!
     //window.screen.availHeight
@@ -85,5 +99,9 @@
     console.log("footer_menu - hmc: " +hmc);
     var padding_top_cal = hmc + "px";
     $( "#footer_menu_cal" ).css( "padding-top", padding_top_cal );
+    var hmr = window.innerHeight -430;
+    console.log("footer_menu_right - hmc: " +hmc);
+    var padding_top_right = hmr + "px";
+    $( "#footer_menu_right" ).css( "padding-top", padding_top_right );
 
   });  

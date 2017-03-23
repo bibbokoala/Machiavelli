@@ -175,26 +175,32 @@
       <div class="container">
         <div class="navbar-header">
           <div id="bottone_menu" >
-      <!-- BUTTON FOR TOGGLE LEFT MENU -->
-      <button type="button" class="navbar-toggle" data-toggle="offcanvas" data-target=".sidebar-nav">
-       <span class="icon-bar" style="background-color: #004691;"></span>
-       <span class="icon-bar" style="background-color: #004691;"></span>
-       <span class="icon-bar" style="background-color: #004691;"></span>
-      </button>
+            <!-- BUTTON FOR TOGGLE LEFT MENU -->
+            <button type="button" class="navbar-toggle" data-toggle="offcanvas" data-target=".sidebar-nav">
+             <span class="icon-bar" style="background-color: #FFF;"></span>
+             <span class="icon-bar" style="background-color: #FFF;"></span>
+             <span class="icon-bar" style="background-color: #FFF;"></span>
+            </button>
+            <!-- BUTTON FOR TOGGLE RIGHT MENU -->
+            <button type="button" class="navbar-toggle pull-right" data-toggle="offcanvas-right" data-target=".sidebar-nav">
+             <span class="glyphicon glyphicon-cog"></span>
+            </button>
           </div>
-          <div class="navbar-header" style="line-height: 56px;" id="testata" >
+          <div class="navbar-header" style="line-height: 56px;vertical-align: middle;" id="testata" >
             <!--<img src="pics/geonav.png" height="56px" align="left" id="logo_small" />-->
             <img src="pics/logo.png" height="56px" align="left" id="logo_small" />
-
-            <a href="vis_mappa.html" type="button" class='.navbar-toggle pull-right' style="color: #004691;" >
-               <span class="glyphicon glyphicon-map-marker" aria-hidden="true" style="color: #004691;" ></span> MAPPA&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<!--
+            <a href="vis_mappa.html" type="button" class='.navbar-toggle pull-right' style="color: #FFF;" >
+               <span class="glyphicon glyphicon-map-marker" aria-hidden="true" style="color: #FFF;" ></span> MAPPA&nbsp;
             </a>
-
+-->
           </div>
         </div>
     </nav>
     <div class="container-fluid" id="fluido" >
       <div class="row">
+
+
       <!-- sidebar LEFT MENU -->      <!-- sidebar -->
       <div class="col-xs-6 col-sm-4 col-md-3 sidebar-offcanvas" >
         <div id="prova" style="width:100%;" data-toggle="offcanvas" data-target=".sidebar-nav">
@@ -209,6 +215,26 @@
           </ul>
         </div> <!-- chiude prova -->  
       </div>
+
+
+      <!-- sidebar RIGHT MENU -->      <!-- sidebar -->
+      <div class="col-xs-6 col-sm-4 col-md-3 sidebar-offcanvas-right" >
+        <div id="prova-right" style="border:1px;width:100%;padding-left:35px;height:100%;" data-toggle="offcanvas-right" style='pull-right' data-target=".sidebar-nav">
+          <ul data-spy="affix-right" data-offset-top="120" id="affix-right" class="nav nav-stacked" >
+            <li><a href="prova1.html"> <i class="fa fa-eye"></i> PROVA 1</a></li>
+            <li><a href="prova2.html"> <i class="fa fa-calendar"></i> PROVA 2</a></li>
+            <li><a href="prova3.html"> <i class="fa fa-calendar"></i> PROVA 3</a></li>
+            <li><a href="prova4.html"> <i class="fa fa-calendar"></i> PROVA 4</a></li>
+          </ul>
+          <ul id="footer_menu_right" data-spy="affix-right" data-offset-top="120" id="affix-right" class="nav nav-stacked" >
+              <li><p>ALTRE OPZIONI</p></li>
+              <li><a href="boh1.html"> <i class="fa fa-info-circle"></i> boh1</a></li>
+              <li><a id="btn_logout"> <i class="fa fa-sign-out"></i> Logout</a></li>
+          </ul>
+        </div> <!-- chiude prova right -->  
+      </div>
+
+
         <!-- content -->
         <div class="col-xs-12  col-sm-8 col-md-9 content">
           <div id="result"></div>
@@ -216,25 +242,37 @@
       </div> <!-- close div row --> 
     </div> <!-- close div container-fluid -->
     <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="js/bootstrap.min.js"></script>
-    <!-- TOGGLE MENU -->
-    <script>
-      $(document).ready(function() {
-      $('[data-toggle=offcanvas]').click(function() {
-        $('.sidebar-offcanvas').toggleClass('active', 1000);
-      });
-    });
-    </script>
-    <script>
-    function statecheck(x, _this) {
-       if (_this.checked) {
-          $('#'+x).css('background-color','#bff0a1');
-       } 
-       else  {
-          $('#'+x).css('background-color','#ffffff');
-       }
+<script src="js/bootstrap.min.js"></script>
+<!-- TOGGLE MENU -->
+<script>
+$(document).ready(function() {
+  
+  $('[data-toggle=offcanvas]').click(function() {
+    if ($( ".sidebar-offcanvas-right" ).hasClass( "active" )){
+      $('.sidebar-offcanvas-right').toggleClass('active', 1000);
     }
-    </script>
+    $('.sidebar-offcanvas').toggleClass('active', 1000);
+  });
+
+  $('[data-toggle=offcanvas-right]').click(function() {
+    if ($( ".sidebar-offcanvas" ).hasClass( "active" )){
+      $('.sidebar-offcanvas').toggleClass('active', 1000);
+    }
+    $('.sidebar-offcanvas-right').toggleClass('active', 1000);
+  });
+
+});
+
+function statecheck(x, _this) {
+   if (_this.checked) {
+      $('#'+x).css('background-color','#bff0a1');
+   } 
+   else  {
+      $('#'+x).css('background-color','#ffffff');
+   }
+}
+
+</script>
 
 <!-- Modal -->
 <!-- AGGIUNGERE CAMPI PRENOTAZIONE 
