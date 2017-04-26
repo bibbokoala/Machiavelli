@@ -188,7 +188,18 @@
       var xmlhttp = new XMLHttpRequest();
 //var url="http://surak/CCSApp/ccs_query.php?pin=test1&token=FAD4A66AB106FE&latitude=41.90&longitude=12.50&poiType=1,2,3,4&range=30&elements=100&name=609";
 //var url="http://2.35.153.229/CCSApp/ccs_query.php?pin=test1&token=FAD4A66AB106FE&latitude="+lat+"&longitude="+lon+"&poiType="+poiType+"&range="+range+"&elements="+limit+"&name="+name;
-var url="http://192.168.1.5/CCSApp/ccs_query.php?pin=test1&token=FAD4A66AB106FE&latitude="+lat+"&longitude="+lon+"&poiType="+poiType+"&range="+range+"&elements="+limit+"&name="+name;
+//var url="http://192.168.1.5/CCSApp/ccs_query.php?pin=test1&token=FAD4A66AB106FE&latitude="+lat+"&longitude="+lon+"&poiType="+poiType+"&range="+range+"&elements="+limit+"&name="+name;
+
+/*PARAMETRI :
+ - citta: fissa su ROMA a meno che l'utente non la cambia
+ - tipologie veicolo: TUTTE a meno che l'utente non le ha scelte nel right menu
+ - distanza: fissa a 30 km
+ - elementi: fisso a 200
+ad esempio:
+http://service.cloudmup.com/GOALocale/MachiavelliQuery.php?pin=test1&token=FAD4A66AB106FE&latitude=41.9027835&longitude=12.4963655&poiType=&range=30&elements=200&name=
+*/
+
+var url="http://service.cloudmup.com/GOALocale/MachiavelliQuery.php?pin=test1&token=FAD4A66AB106FE&latitude="+lat+"&longitude="+lon+"&poiType="+poiType+"&range="+range+"&elements="+limit+"&name="+name;
 
       console.log("url:"+url);
       xmlhttp.onreadystatechange=function() {

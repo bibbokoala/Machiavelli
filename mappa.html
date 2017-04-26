@@ -36,14 +36,90 @@
     }
 
 
+    function saveListForPage(response, page) {
+      var lista = response;
+      var appoggio = JSON.parse(lista);
+      if (appoggio.length>0)
+        var metri = appoggio[0].distance;
+      else
+        var metri = 0;
+      localStorage.setItem("metri", metri);
+      localStorage.setItem("link", "poi");
+      localStorage.setItem("lista", lista);
+      if (page.localeCompare("vis_lista.html")==0)
+      {
+         localStorage.setItem("view", "lista");
+         var btn = $("#poi_lista");
+      }
+      else
+      {
+         localStorage.setItem("view", "mappa");
+         var btn = $("#poi_mappa");
+      }
+      btn.button('reset'); 
+      window.location = page;
+    }
+
+    function getVehicles(targa){
+      //DEBUG alert("targa: " + targa);
+      var page="mappa.html";
+      var poiType=10;
+      var range=30;
+      var limit=200;
+      localStorage.setItem("page", page );
+      localStorage.setItem("poiType", poiType );
+      localStorage.setItem("range", range );
+      localStorage.setItem("risultati", limit );
+      localStorage.setItem("nome_elemento", targa);
+      var lat = localStorage.getItem("latitudine");
+      var lon = localStorage.getItem("longitudine");
+      var xmlhttp = new XMLHttpRequest();
+      /*PARAMETRI :
+       - citta: fissa su ROMA a meno che l'utente non la cambia
+       - tipologie veicolo: TUTTE a meno che l'utente non le ha scelte nel right menu
+       - distanza: fissa a 30 km
+       - elementi: fisso a 200
+      */
+      var url="http://service.cloudmup.com/GOALocale/MachiavelliQuery.php?pin=test1&token=FAD4A66AB106FE&latitude="+lat+"&longitude="+lon+"&poiType="+poiType+"&range=30&elements=200&name=";
+
+      if (targa != null){
+        url= url + targa;
+        //DEBUG alert("url: " + url);
+      }
+
+      console.log("url:"+url);
+      xmlhttp.onreadystatechange=function() {
+          //DEBUG alert("onreadystatechange");
+          if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+              //DEBUG alert("renderList");
+              saveListForPage(xmlhttp.responseText, page);
+          }
+      }
+      xmlhttp.open("GET", url, true);
+      xmlhttp.send();
+    }
+
 
  function apriModale(id){
    console.log("APRI IL MODALE: "+id);
    $("#"+id).modal('show');
  }
+
  function aggiornaPagina(){
-  location.reload(); 
+  getVehicles(null);
+  //location.reload(); 
  }
+
+
+  $(document).ready(function() {
+    $("#btn_targa").click(function(){
+      //var formData = $("#query_targa").serialize();
+      var targa = $("#targa_veicolo").val();
+      //alert(targa);
+      getVehicles(targa);
+    });
+  });  
+
 </script>
 </head>
 <body>
@@ -238,6 +314,18 @@ function statecheck(x, _this) {
         // create an array of markers based on a given "locations" array.
         // The map() method here has nothing to do with the Google Maps API.        
         var image = 'pics/markerclusterer/mpin.png';
+
+        var lista = localStorage.getItem("lista");
+        var arr = JSON.parse(lista);
+        var locations = [];
+        for(i = 0; i < arr.length; i++) {
+          //DEBUG alert("lat: " + arr[i].latitude + " - lon: " +arr[i].longitude);
+          var myLatlng = new google.maps.LatLng(arr[i].latitude, arr[i].longitude);
+          //DEBUG alert(myLatlng);
+          locations.push(myLatlng);
+        }
+        //DEBUG LOCATIONS: alert(locations.toString());
+
         var markers = locations.map(function(location, i) {
           return new google.maps.Marker({
             position: location,
@@ -339,33 +427,7 @@ function statecheck(x, _this) {
 
       }
 
-      var locations = [
-        {lat: 41.90, lng: 12.4201},
-        {lat: 41.91, lng: 12.4201},
-        {lat: 41.92, lng: 12.4201},
-        {lat: 41.93, lng: 12.4201},
-        {lat: 41.94, lng: 12.4201},
-        {lat: 41.95, lng: 12.4201},
-        {lat: 41.96, lng: 12.4201},
-        {lat: 41.97, lng: 12.4201},
-        {lat: 41.98, lng: 12.4201},
-        {lat: 41.99, lng: 12.4201},
-        {lat: 41.912, lng: 12.4201},
-        {lat: 41.922, lng: 12.4201},
-        {lat: 41.933, lng: 12.4201},
-        {lat: 41.944, lng: 12.4201},
-        {lat: 41.955, lng: 12.4201},
-        {lat: 41.966, lng: 12.4201},
-        {lat: 41.977, lng: 12.4201},
-        {lat: 41.988, lng: 12.4201},
-        {lat: 41.999, lng: 12.4201},
-        {lat: 41.91111, lng: 12.4201},
-        {lat: 41.92222, lng: 12.4201},
-        {lat: 41.93333, lng: 12.4201},
-        {lat: 41.94444, lng: 12.4201},
-        {lat: 41.95555, lng: 12.4201},
-        {lat: 41.96666, lng: 12.4201}
-      ]
+
     </script>
 
     <script>
@@ -435,6 +497,7 @@ function statecheck(x, _this) {
 
 <div class="modal fade" id="prendi_a_vista" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
+    <form id='query_targa' >
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -443,15 +506,17 @@ function statecheck(x, _this) {
       <div class="modal-body">
         <div class="row">
           <div class="container-fluid">
-          <label style="color:#000000;" >Numero di Targa</label>
-          <input id="targa-veicolo" class="form-control input-lg" type="text" placeholder="numero targa" onchange="this.value = this.value.toUpperCase( );">
+            <label style="color:#000000;" >Numero di Targa</label>
+            <input id="targa_veicolo" name="targa_veicolo" class="form-control input-lg" type="text" placeholder="numero targa" 
+                   onchange="this.value = this.value.toUpperCase( );">
           </div>
         </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">ANNULLA</button>
-        <button type="button" class="btn btn-primary">PRENDI IL VEICOLO</button>
+        <button id="btn_targa" type="button" class="btn btn-primary">PRENDI IL VEICOLO</button>
       </div>
     </div>
+    </form>
   </div>
 </div>

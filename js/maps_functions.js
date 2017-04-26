@@ -73,7 +73,7 @@ function initMap() {
 
   function content(poiType, poiName, address,  lat, lon, distance, url1, url2, url3){
     //var poi_images = ["", "ppu.png", "apparato.png", "bts.png", "armadio.png", "terra.png", "aps.png", "sede.png", "distributore.png", "sito.png", "palo.png"]; 
-    var poi_images = ["", "q_posti.png", "d_posti.png", "elettrico.png", "berlina.png"];
+    var poi_images = ["", "", "", "", "", "", "", "", "", "", "q_posti.png", "", "", "", "", "", "", "", "", "", "d_posti.png", "elettrico.png", "berlina.png"];
     var image="";
       if (url1.length<3)
         image = '<img src="./pics/nia.png" border=0 width=50% />';
@@ -120,7 +120,8 @@ function initMap() {
       '<input type="hidden" name="vehicle_type" id="vehicle_type" value="'+poiType+'" />'+
       '<div id="bodyContent">'+
       '<p style="color: #000;" >'+
-      '<img src="pics/'+poi_images[poiType]+'" /> - ' +
+      //'<img src="pics/'+poi_images[poiType]+'" /> - ' +
+      '<img src="pics/q_posti.png" /> - ' +
       'TARGA: ' + url2 + '<br>' +
       'latitudine: ' + lat + ' - longitudine: ' + lon + ' - distanza: ' + distance + '<br><br>' +
                       '<label for="motivoUtilizzo" >Motivo utilizzo </label>'+
@@ -174,7 +175,7 @@ function initMap() {
   var arr = JSON.parse(lista);
   var i;
   //var poi_images = ["", "ppu.png", "apparato.png", "bts.png", "armadio.png", "terra.png", "aps.png", "sede.png", "distributore.png", "sito.png", "palo.png"]; 
-  var poi_images = ["", "q_posti.png", "d_posti.png", "elettrico.png", "berlina.png"];
+  var poi_images = ["", "", "", "", "", "", "", "", "", "", "q_posti.png", "", "", "", "", "", "", "", "", "", "d_posti.png", "elettrico.png", "berlina.png"];
   for(i = 0; i < arr.length; i++) {
     console.log(i + "" + arr[i].poiName);
     // tolta la vitgola ai metri...
