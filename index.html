@@ -151,10 +151,12 @@ $.fn.serializeObject = function()
       console.log(parametri);
       localStorage.setItem("matricola", $("#matricola").val());
       localStorage.setItem("password", $("#password").val());
+      //MachiavelliLogin consente l'accesso alle matricole telecom tramite LDAP
+      var url = "http://service.cloudmup.com/GOALocale/MachiavelliLogin.php";
       //var url = "http://service.cloudmup.com/GOALocale/GeoNavLogin.php";
       //var url = "http://surak/CCSApp/ccs_login.php";
       //var url = "http://2.35.153.229/CCSApp/ccs_login.php";
-      var url = "http://192.168.1.5/CCSApp/ccs_login.php";
+      //var url = "http://192.168.1.5/CCSApp/ccs_login.php";
       console.log(url);
       $.ajax({
         type: "GET",
