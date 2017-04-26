@@ -83,6 +83,8 @@ $.fn.serializeObject = function()
 };
   function onSuccess(data, status)
   {
+    alert(onSuccess);
+    alert("data.status: "+data.status);
     console.log("data.status: "+data.status);
     console.log("data: "+ JSON.stringify(data));
     localStorage.setItem("auth", data.auth);
@@ -102,6 +104,8 @@ $.fn.serializeObject = function()
   function onError(data, status)
   {
     //var htmlString = "<p>ERRORE Login!</p>";
+    alert(onError);
+    alert("data.status: "+data.status);
     console.log("data.status: "+data.status);
     console.log("data: "+ JSON.stringify(data));
     localStorage.setItem("link", "menu");
@@ -148,7 +152,7 @@ $.fn.serializeObject = function()
       {
         var parametri = formData;
       }
-      console.log(parametri);
+      console.log("parametri: "+parametri);
       localStorage.setItem("matricola", $("#matricola").val());
       localStorage.setItem("password", $("#password").val());
       //MachiavelliLogin consente l'accesso alle matricole telecom tramite LDAP
