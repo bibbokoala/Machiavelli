@@ -246,7 +246,8 @@ var url="http://service.cloudmup.com/GOALocale/MachiavelliQuery.php?pin=test1&to
          var btn = $(this);
          btn.button('loading');
         //function call(lat, lon, page, poiType, range, limit, name)
-         call(lat, lon, "vis_mappa.html", params['poiType'], params['range'], params['risultati'], params['nome_elemento']);
+         //call(lat, lon, "vis_mappa.html", params['poiType'], params['range'], params['risultati'], params['nome_elemento']);
+         call(lat, lon, "mappa.html", params['poiType'], params['range'], params['risultati'], params['nome_elemento']);
       }
       else
       {
@@ -275,7 +276,9 @@ var url="http://service.cloudmup.com/GOALocale/MachiavelliQuery.php?pin=test1&to
           </div>
           <div class="navbar-header" style="line-height: 56px;" id="testata" >
             <!--<img src="pics/geonav.png" height="56px" align="left" id="logo_small" />-->
-            <img src="pics/logo.png" height="56px" align="left" id="logo_small" />
+            <a href="index.html">
+              <img src="pics/logo.png" height="56px" align="left" id="logo_small" />
+            </a>
           </div>
 
         </div>
