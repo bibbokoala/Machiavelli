@@ -73,30 +73,38 @@
       localStorage.setItem("nome_elemento", targa);
       var lat = localStorage.getItem("latitudine");
       var lon = localStorage.getItem("longitudine");
-      var xmlhttp = new XMLHttpRequest();
-      /*PARAMETRI :
-       - citta: fissa su ROMA a meno che l'utente non la cambia
-       - tipologie veicolo: TUTTE a meno che l'utente non le ha scelte nel right menu
-       - distanza: fissa a 30 km
-       - elementi: fisso a 200
-      */
-      var url="http://service.cloudmup.com/GOALocale/MachiavelliQuery.php?pin=test1&token=FAD4A66AB106FE&latitude="+lat+"&longitude="+lon+"&poiType="+poiType+"&range=30&elements=200&name=";
+      if ( (lat!=null) && (lon!=null) ){
+        var xmlhttp = new XMLHttpRequest();
+        /*PARAMETRI :
+         - citta: fissa su ROMA a meno che l'utente non la cambia
+         - tipologie veicolo: TUTTE a meno che l'utente non le ha scelte nel right menu
+         - distanza: fissa a 30 km
+         - elementi: fisso a 200
+        */
+        var url="http://service.cloudmup.com/GOALocale/MachiavelliQuery.php?pin=test1&token=FAD4A66AB106FE&latitude="+lat+"&longitude="+lon+"&poiType="+poiType+"&range=30&elements=200&name=";
 
-      if (targa != null){
-        url= url + targa;
-        //DEBUG alert("url: " + url);
-      }
+        if (targa != null){
+          url= url + targa;
+          //DEBUG alert("url: " + url);
+        }
 
-      console.log("url:"+url);
-      xmlhttp.onreadystatechange=function() {
-          //DEBUG alert("onreadystatechange");
-          if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-              //DEBUG alert("renderList");
-              saveListForPage(xmlhttp.responseText, page);
-          }
+        console.log("url:"+url);
+        //DEBUG alert("url:"+url);
+
+        xmlhttp.onreadystatechange=function() {
+            //DEBUG alert("onreadystatechange");
+            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                //DEBUG alert("renderList");
+                saveListForPage(xmlhttp.responseText, page);
+            }
+        }
+        xmlhttp.open("GET", url, true);
+        xmlhttp.send();
       }
-      xmlhttp.open("GET", url, true);
-      xmlhttp.send();
+      else{
+        alert("Scegliere un indirizzo di ricerca.");
+        $("#pac-input").focus();
+      }
     }
 
 
@@ -112,12 +120,18 @@
 
 
   $(document).ready(function() {
+    var indirizzo = localStorage.getItem("indirizzo");
+    if (indirizzo!=null){
+      $("#pac-input").val(indirizzo);
+    }
+
     $("#btn_targa").click(function(){
       //var formData = $("#query_targa").serialize();
       var targa = $("#targa_veicolo").val();
       //alert(targa);
       getVehicles(targa);
     });
+
   });  
 
 </script>
@@ -239,7 +253,7 @@
    <button class='btn btn-sm btn-success' onclick="aggiornaPagina();" style="position:absolute;left:10px;bottom:10px;z-index:1;" >
     <i class="fa fa-refresh"></i>
    </button>
-   <button class='btn btn-lg btn-success' style="position:absolute;left:10px;top:108px;z-index:1;width:95%;" >
+   <button id="apri_veicolo" class='btn btn-lg btn-success' style="position:absolute;left:10px;top:108px;z-index:1;width:95%;display:none;" >
     <i class="fa fa-key pull-left"></i>APRI VEICOLO
    </button>
  <!--
@@ -301,11 +315,56 @@ function statecheck(x, _this) {
 
 
     <script>
-      function initMap(position) {
-
-        var centerMap = new google.maps.LatLng(41.90, 12.42);
+      function renderVehicles(){
+        getVehicles(null);
+        var lat = localStorage.getItem("latitudine");
+        var lon = localStorage.getItem("longitudine");
+        if ( (lat!=null) && (lon!=null) ){
+          var centerMap = new google.maps.LatLng(lat, lon);
+        }
+        else{
+          var centerMap = new google.maps.LatLng(41.90, 12.42);
+        }
         var map = new google.maps.Map(document.getElementById('map'), {
-          zoom: 8,
+          zoom: 12,
+          center: centerMap,
+          disableDefaultUI: true
+        });
+        var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';  
+        var image = 'pics/markerclusterer/mpin.png';
+        var lista = localStorage.getItem("lista");
+        console.log("lista: " + lista);
+        var arr = JSON.parse(lista);
+        var locations = [];
+        for(i = 0; i < arr.length; i++) {
+          var myLatlng = new google.maps.LatLng(arr[i].latitude, arr[i].longitude);
+          locations.push(myLatlng);
+        }
+        var markers = locations.map(function(location, i) {
+          return new google.maps.Marker({
+            position: location,
+            label: labels[i % labels.length],
+            icon: image
+          });
+        });
+        // Add a marker clusterer to manage the markers.
+        var markerCluster = new MarkerClusterer(map, markers,{imagePath: 'pics/markerclusterer/m'});
+      }
+
+
+
+      function initMap(position) {
+        var lat = localStorage.getItem("latitudine");
+        var lon = localStorage.getItem("longitudine");
+        if ( (lat!=null) && (lon!=null) ){
+          var centerMap = new google.maps.LatLng(lat, lon);
+        }
+        else{
+          var centerMap = new google.maps.LatLng(41.90, 12.42);
+        }
+
+        var map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 12,
           center: centerMap,
           disableDefaultUI: true
         });
@@ -318,7 +377,14 @@ function statecheck(x, _this) {
         var image = 'pics/markerclusterer/mpin.png';
 
         var lista = localStorage.getItem("lista");
+        console.log("lista: " + lista);
         var arr = JSON.parse(lista);
+        /* VEICOLI NON TROVATI
+        if (arr.length==0){
+          alert("Veicoli NON trovati");
+          $("#pac-input").focus();
+        }
+        */
         var locations = [];
         for(i = 0; i < arr.length; i++) {
           //DEBUG alert("lat: " + arr[i].latitude + " - lon: " +arr[i].longitude);
@@ -377,6 +443,7 @@ function statecheck(x, _this) {
               console.log("centerMap:" + centerMap);
             }
             map.setCenter(centerMap);
+            renderVehicles();
             //map.fitBounds(bounds);
           });
         }
@@ -423,7 +490,12 @@ function statecheck(x, _this) {
                 alert("ERRORE GPS... [" + status + "]");
                 //callGpsSettings();
               }
-            });
+              var lat = localStorage.getItem("latitudine");
+              var lon = localStorage.getItem("longitudine");
+              centerMap = new google.maps.LatLng(lat, lon);
+              map.setCenter(centerMap);
+              renderVehicles();
+            });        
           }
         }
 
@@ -469,7 +541,7 @@ function statecheck(x, _this) {
     {
       console.log("getLocation");
       interval = setInterval(function() { checkGPS(); }, c);
-      //navigator.geolocation.getCurrentPosition(initAutocomplete, onErrorGPS, config);
+      //navigator.geolocation.getCurrentPosition(initMap, onErrorGPS, config);
       console.log("END OF getCurrentPosition");
     }
     /***/
@@ -487,7 +559,7 @@ function statecheck(x, _this) {
         $( "#pac-input" ).focus();
       }
       console.log('<br />time elapsed: '+ time/1000+' seconds');
-      navigator.geolocation.getCurrentPosition(initAutocomplete, onErrorGPS, config);
+      navigator.geolocation.getCurrentPosition(initMap, onErrorGPS, config);
     }
     </script>
     <script src="js/markerclusterer.js">

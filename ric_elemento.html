@@ -199,7 +199,12 @@ ad esempio:
 http://service.cloudmup.com/GOALocale/MachiavelliQuery.php?pin=test1&token=FAD4A66AB106FE&latitude=41.9027835&longitude=12.4963655&poiType=&range=30&elements=200&name=
 */
 
-var url="http://service.cloudmup.com/GOALocale/MachiavelliQuery.php?pin=test1&token=FAD4A66AB106FE&latitude="+lat+"&longitude="+lon+"&poiType="+poiType+"&range="+range+"&elements="+limit+"&name="+name;
+//var url="http://service.cloudmup.com/GOALocale/MachiavelliQuery.php?pin=test1&token=FAD4A66AB106FE&latitude="+lat+"&longitude="+lon+"&poiType="+poiType+"&range="+range+"&elements="+limit+"&name="+name;
+      var url="http://service.cloudmup.com/GOALocale/MachiavelliQuery.php?pin=test1&token=FAD4A66AB106FE&latitude="+lat+"&longitude="+lon+"&poiType="+poiType+"&range=30&elements=200&name=";
+      if (name != null){
+        url= url + name;
+        //DEBUG alert("url: " + url);
+      }
 
       console.log("url:"+url);
       xmlhttp.onreadystatechange=function() {
