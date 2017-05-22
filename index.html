@@ -81,6 +81,32 @@ $.fn.serializeObject = function()
     });
     return o;
 };
+
+  function call(){
+    var token = localStorage.getItem("token");
+    if (token==null)
+        token="asd666";
+    var lat = localStorage.getItem("latitudine");
+    if (lat == null)
+       lat = 41.90;
+    var lon = localStorage.getItem("longitudine");
+    if (lon == null)
+       lon = 12.42;
+    var xmlhttp = new XMLHttpRequest();
+    var url="http://service.cloudmup.com/GOALocale/MachiavelliQuery.php?pin=test1&token="+token+"&latitude="+lat+"&longitude="+lon+"&poiType=&range=30&elements=200&name=";
+    console.log("url:"+url);
+    xmlhttp.onreadystatechange=function() {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+            var lista = xmlhttp.responseText;
+            localStorage.setItem("lista", lista);
+            window.location = "mappa.html";
+        }
+    }
+    xmlhttp.open("GET", url, true);
+    xmlhttp.send();
+  }
+
+
   function onSuccess(data, status)
   {
     console.log("onSuccess");
@@ -91,9 +117,10 @@ $.fn.serializeObject = function()
     localStorage.setItem("login", data.auth);
     if (data.auth.localeCompare("OK")==0)
     {
-       localStorage.setItem("link", "poi");
+       localStorage.setItem("link", "mappa");
        //window.location = "ric_elemento.html";
-       window.location = "mappa.html";
+       console.log("lista veicoli non presente devo rieffettuare la ricerca...");
+       call();
     }
     else
     {

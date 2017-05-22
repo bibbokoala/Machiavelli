@@ -132,6 +132,43 @@
       getVehicles(targa);
     });
 
+    //leggo tutti i parametri del right menu dal localstorage:
+    var elettrico = localStorage.getItem("elettrico");
+    if ( (elettrico!=null) && (elettrico=="true") )
+      document.getElementById("elettrico").checked = true;
+    else
+      document.getElementById("elettrico").checked = false;
+
+    var benzina = localStorage.getItem("benzina");
+    if ( (benzina!=null) && (benzina=="true") )
+      document.getElementById("benzina").checked = true;
+    else
+      document.getElementById("benzina").checked = false;
+
+    var gasolio = localStorage.getItem("gasolio");
+    if ( (gasolio!=null) && (gasolio=="true") )
+      document.getElementById("gasolio").checked = true;
+    else
+      document.getElementById("gasolio").checked = false;
+
+    var ibridi = localStorage.getItem("ibridi");
+    if ( (ibridi!=null) && (ibridi=="true") )
+      document.getElementById("ibridi").checked = true;
+    else
+      document.getElementById("ibridi").checked = false;
+
+    var parcheggi = localStorage.getItem("parcheggi");
+    if ( (parcheggi!=null) && (parcheggi=="true") )
+      document.getElementById("parcheggi").checked = true;
+    else
+      document.getElementById("parcheggi").checked = false;
+    
+    var distributori = localStorage.getItem("distributori");
+    if ( (distributori!=null) && (distributori=="true") )
+      document.getElementById("distributori").checked = true;
+    else
+      document.getElementById("distributori").checked = false;
+
   });  
 
 </script>
@@ -179,7 +216,19 @@
           </ul>
         </div> <!-- chiude prova -->  
       </div>
-
+<script>
+function check(id){
+  if (document.getElementById(id).checked) 
+  {
+     console.log("id :" + id + " checked");
+  }
+  else{
+     console.log("id :" + id + " NOT checked");
+  }
+  localStorage.setItem(id, document.getElementById(id).checked);
+  console.log(localStorage.getItem(id));
+}
+</script>
 
       <!-- sidebar RIGHT MENU -->      <!-- sidebar -->
       <div class="col-xs-6 col-sm-4 col-md-3 sidebar-offcanvas-right" >
@@ -187,25 +236,25 @@
           <ul data-spy="affix-right" data-offset-top="120" id="affix-right" class="nav nav-stacked" >
             <li><a>Veicoli elettrici
               <label class="switch pull-right">
-                <input id='elettrico' name='elettrico' type="checkbox">
+                <input id='elettrico' name='elettrico' type="checkbox" onclick="check(this.id);">
                 <div class="slider round"></div>
               </label></a>
              </li>
             <li><a>Veicoli a benzina
               <label class="switch pull-right">
-                <input id='benzina' name='benzina' type="checkbox">
+                <input id='benzina' name='benzina' type="checkbox" onclick="check(this.id);">
                 <div class="slider round"></div>
               </label></a>
              </li>
             <li><a>Veicoli a gasolio
               <label class="switch pull-right">
-                <input id='gasolio' name='gasolio' type="checkbox" checked>
+                <input id='gasolio' name='gasolio' type="checkbox" checked onclick="check(this.id);">
                 <div class="slider round"></div>
               </label></a>
              </li>
             <li><a>Veicoli ibridi
               <label class="switch pull-right">
-                <input id='ibridi' name='ibridi' type="checkbox" checked>
+                <input id='ibridi' name='ibridi' type="checkbox" checked onclick="check(this.id);">
                 <div class="slider round"></div>
               </label></a>
              </li>
@@ -214,13 +263,13 @@
               <li><p>ALTRE OPZIONI</p></li>
             <li><a>Parcheggi
               <label class="switch pull-right">
-                <input id='parcheggi' name='parcheggi' type="checkbox" checked>
+                <input id='parcheggi' name='parcheggi' type="checkbox" checked onclick="check(this.id);">
                 <div class="slider round"></div>
               </label></a>
              </li>
             <li><a>Distributori di carburanti
               <label class="switch pull-right">
-                <input id='distributori' name='distributori' type="checkbox" checked>
+                <input id='distributori' name='distributori' type="checkbox" checked onclick="check(this.id);">
                 <div class="slider round"></div>
               </label></a>
              </li>
@@ -351,8 +400,6 @@ function statecheck(x, _this) {
         var markerCluster = new MarkerClusterer(map, markers,{imagePath: 'pics/markerclusterer/m'});
       }
 
-
-
       function initMap(position) {
         var lat = localStorage.getItem("latitudine");
         var lon = localStorage.getItem("longitudine");
@@ -378,31 +425,51 @@ function statecheck(x, _this) {
 
         var lista = localStorage.getItem("lista");
         console.log("lista: " + lista);
-        var arr = JSON.parse(lista);
+        var arr = [];
+        if (lista != null){
+          var arr = JSON.parse(lista);
+        }
         /* VEICOLI NON TROVATI
         if (arr.length==0){
           alert("Veicoli NON trovati");
           $("#pac-input").focus();
         }
         */
-        var locations = [];
-        for(i = 0; i < arr.length; i++) {
-          //DEBUG alert("lat: " + arr[i].latitude + " - lon: " +arr[i].longitude);
-          var myLatlng = new google.maps.LatLng(arr[i].latitude, arr[i].longitude);
-          //DEBUG alert(myLatlng);
-          locations.push(myLatlng);
-        }
-        //DEBUG LOCATIONS: alert(locations.toString());
 
-        var markers = locations.map(function(location, i) {
-          return new google.maps.Marker({
-            position: location,
-            label: labels[i % labels.length],
-            icon: image
+        if (arr!=null){
+          var locations = [];
+          var contents = [];
+          for(i = 0; i < arr.length; i++) {
+            //DEBUG alert("lat: " + arr[i].latitude + " - lon: " +arr[i].longitude);
+            var myLatlng = new google.maps.LatLng(arr[i].latitude, arr[i].longitude);
+            var content = "<p style='color:#000;'>Veicolo: <b>"+arr[i].poiName+"</b>"+
+                          "<br>targa: <b>"+arr[i].url2+"</b>"+
+                          "<br>codice veicolo: <b>"+arr[i].url3+"</b>"+
+                          "<br><!-- - distanza: <b>"+arr[i].distance+" metri </b>-->"+
+                          "<br><button id='btn_prenota' name='btn_prenota' class='btn btn-sm btn-success btn-block' >PRENOTA</button>"+
+                          "</p>";
+            //DEBUG alert(myLatlng);
+            locations.push(myLatlng);
+            contents.push(content);
+          }
+          //DEBUG LOCATIONS: alert(locations.toString());
+          var infoWin = new google.maps.InfoWindow();
+          var markers = locations.map(function(location, i) {
+            var marker = new google.maps.Marker({
+              position: location,
+              label: labels[i % labels.length],
+              icon: image
+            });
+            //alert(contents[i]);
+            google.maps.event.addListener(marker, 'click', function() {
+              infoWin.setContent(contents[i]);
+              infoWin.open(map, marker);
+            })
+            return marker;
           });
-        });
-        // Add a marker clusterer to manage the markers.
-        var markerCluster = new MarkerClusterer(map, markers,{imagePath: 'pics/markerclusterer/m'});
+          // Add a marker clusterer to manage the markers.
+          var markerCluster = new MarkerClusterer(map, markers,{imagePath: 'pics/markerclusterer/m'});
+        }
 
         
         //alert("position: "+position);
