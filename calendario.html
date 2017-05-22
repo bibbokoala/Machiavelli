@@ -166,11 +166,7 @@
   });
   </script>
 <script>
-  /* ESERCIZIO: */
-  var remote_url = "http://2.35.153.229/CCSApp/ccs_get_pren.php";
-  /* SVILUPPO
-  var remote_url = "http://surak/CCSApp/ccs_get_pren.php";
-  */
+  var remote_url = "http://service.cloudmup.com/GOALocale/MachiavelliGetPren.php";
   var matricola = localStorage.getItem("matricola");
   $.ajax({
     url: remote_url,
@@ -213,11 +209,7 @@
       }
       var formData = $("#form_upd_pren").serialize();
       console.log(formData);
-      /* ESERCIZIO: */
-      var url = "http://2.35.153.229/CCSApp/ccs_del_pren.php";
-      /* SVILUPPO
-      var url = "http://surak/CCSApp/ccs_del_pren.php";
-      */
+      var url = "http://service.cloudmup.com/GOALocale/MachiavelliDelPren.php";
       $.ajax({
         url: url,
             type: 'POST', // Send post data
@@ -252,11 +244,7 @@
       }
       var formData = $("#form_upd_pren").serialize();
       console.log(formData);
-      /* ESERCIZIO: */
-      var url = "http://2.35.153.229/CCSApp/ccs_upd_pren.php";
-      /* SVILUPPO
-      var url = "http://surak/CCSApp/ccs_upd_pren.php";
-      */
+      var url = "http://service.cloudmup.com/GOALocale/MachiavelliUpdPren.php";
       $.ajax({
         url: url,
         type: 'POST', // Send post data
@@ -292,12 +280,7 @@
       }
       var formData = $("#form_new_pren").serialize();
       console.log(formData);
-      //alert(formData);
-      /* ESERCIZIO: */
-      var url = "http://2.35.153.229/CCSApp/ccs_ins_pren.php";
-      /* SVILUPPO
-      var url = "http://surak/CCSApp/ccs_ins_pren.php";
-      */
+      var url = "http://service.cloudmup.com/GOALocale/MachiavelliInsPren.php";
       $.ajax({
         url: url,
             type: 'POST', // Send post data
@@ -319,6 +302,7 @@
       /* SVILUPPO
       var url = "http://surak/CCSApp/ccs_get_pren_details.php";
       */
+      var url = "http://service.cloudmup.com/GOALocale/MachiavelliGetPrenDetails.php";
       //alert("prenID: " + prenID);
       $.ajax({
         url: url,
@@ -731,7 +715,7 @@
 
 
   <!-- Modal -->
-  <div class="modal fade" id="event_details" role="dialog">
+  <div class="modal fade" id="event_details" role="dialog" >
     <div class="modal-dialog">
       <form class="form" id="form_upd_pren" name="form_upd_pren" >  
       <!-- Modal content-->
@@ -750,7 +734,7 @@
           DETTAGLI.......: <span id='event_details_objects' ></span><br>
           STATO.......: <span id='event_details_status' ></span><br>
         -->
-        <table class='table_pren' width="100%" >
+        <table class='table_pren' width="100%" style="color:#000000;" >
           <tr>
             <td width="50%">
               <label for='upd_depotStartId' >Sede di partenza <font color=red>*</font> </label>
