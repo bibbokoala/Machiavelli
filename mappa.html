@@ -400,6 +400,11 @@ function statecheck(x, _this) {
         var markerCluster = new MarkerClusterer(map, markers,{imagePath: 'pics/markerclusterer/m'});
       }
 
+      function prenota(codice_veicolo, targa){
+        //per ora inserito confirm solo per test!
+        confirm("Vuoi prenotare il veicolo: " + codice_veicolo + " - targato: " + targa);
+      }
+
       function initMap(position) {
         var lat = localStorage.getItem("latitudine");
         var lon = localStorage.getItem("longitudine");
@@ -446,7 +451,8 @@ function statecheck(x, _this) {
                           "<br>targa: <b>"+arr[i].url2+"</b>"+
                           "<br>codice veicolo: <b>"+arr[i].url3+"</b>"+
                           "<br><!-- - distanza: <b>"+arr[i].distance+" metri </b>-->"+
-                          "<br><button id='btn_prenota' name='btn_prenota' class='btn btn-sm btn-success btn-block' >PRENOTA</button>"+
+                          "<br><button id='btn_prenota' name='btn_prenota' class='btn btn-sm btn-success btn-block' "+
+                          "     onclick=\"prenota('"+arr[i].url3+"', '"+arr[i].url2+"');\" >PRENOTA</button>"+
                           "</p>";
             //DEBUG alert(myLatlng);
             locations.push(myLatlng);
