@@ -1,0 +1,1 @@
+qrencode -o <nomefile>.png -s 5 -l H -m 8 "<pnr>\n<dataorada>\n<dataoraa>\n<codicebb>"

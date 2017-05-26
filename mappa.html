@@ -403,6 +403,21 @@ function statecheck(x, _this) {
       function prenota(codice_veicolo, targa){
         //per ora inserito confirm solo per test!
         confirm("Vuoi prenotare il veicolo: " + codice_veicolo + " - targato: " + targa);
+        /*
+        var url = "http://service.cloudmup.com/GOALocale/MachiavelliInsPren.php";
+        $.ajax({
+          url: url,
+              type: 'POST', // Send post data
+              data: formData,
+              async: false,
+              success: function(s){
+                var result_insert = s;
+                console.log(JSON.stringify(result_insert));
+                //$('#new_event').modal('hide');
+                setTimeout(function(){ window.location = "calendario.html"; }, 1500);
+              }
+        });
+        */
       }
 
       function initMap(position) {

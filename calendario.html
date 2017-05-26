@@ -297,8 +297,9 @@
     });
 
     function getPrenDetails(prenID){
-      /* ESERCIZIO: */
+      /* ESERCIZIO:
       var url = "http://2.35.153.229/CCSApp/ccs_get_pren_details.php";
+      */
       /* SVILUPPO
       var url = "http://surak/CCSApp/ccs_get_pren_details.php";
       */
@@ -440,10 +441,11 @@
                  (status.localeCompare("appins")==0) ||
                  (status.localeCompare("ATTESA PICKUP")==0) ||
                  (status.localeCompare("IN USO")==0) ){
-                 //$("#details").html("<img src='http://2.35.153.229/CCSApp/QRCODES/" + calEvent.id + "' />");
                  //MAURIZIO MI HA CHIESTO DI METTERE UN QRCODE FISSO!!!
                  //PATH pagine PHP /opt/web su surak
-                 $("#details").html("<img src='pics/qrcode_default.png' width='100%' />");
+                 //$("#details").html("<img src='pics/qrcode_default.png' width='100%' />");
+                 //path server TELECOM
+                 $("#details").html("<img src='http://service.cloudmup.com/GOALocale/QRCODE/" + calEvent.id + "' width='100%' />");
                  $("#details").css("display","block");
              }
           }
