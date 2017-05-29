@@ -119,6 +119,7 @@
       $("#tabella_dettagli").html("<a download='"+qrcode+"' href='"+path+qrcode+"' target='_blank' >" + 
                                   "  <img src='"+path+qrcode+"' width='100%' />" + 
                                   "</a>");
+      var ref = cordova.InAppBrowser.open(path, "_blank", options);
     }
 
     function chiudiNoleggio(path,qrcode){
@@ -127,6 +128,7 @@
       $("#tabella_dettagli").html("<a download='"+qrcode+"' href='"+path+qrcode+"' target='_blank' >" + 
                                   "  <img src='"+path+qrcode+"' width='100%' />" + 
                                   "</a>");
+      var ref = cordova.InAppBrowser.open(path, "_blank", options);
     }
 
   $( function() {
