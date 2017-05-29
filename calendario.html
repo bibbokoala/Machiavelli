@@ -87,7 +87,7 @@
        .fc-agendaDay-button {border-radius: 4px;}
        .fc-past {background-color: #DDD;}
        .fc-today {background-color: #FFFF80;}
-       .fc-future {background-color: #FFF;}
+       .fc-future {background-color: #01ff70;}
     </style>
 
     <script src="fullcalendar/lib/jquery.min.js" type="text/javascript"></script>
@@ -110,6 +110,20 @@
   console.log("token: "+localStorage.getItem("token"));
   console.log("login: "+localStorage.getItem("login"));
   console.log("link: "+localStorage.getItem("link"));
+
+
+
+    function iniziaNoleggio(qrcode){
+      console.log("iniziaNoleggio");
+      //tabella_dettagli
+      $("#tabella_dettagli").html("<img src='"+qrcode+"' width='100%' />");
+    }
+
+    function chiudiNoleggio(qrcode){
+      console.log("chiudiNoleggio");
+      //tabella_dettagli
+      $("#tabella_dettagli").html("<img src='"+qrcode+"' width='100%' />");
+    }
 
   $( function() {
 
@@ -449,7 +463,16 @@
                  $("#details").css("display","block");
              }
           }
-          //BOTTONE PER APRIRE VISUALIZZARE E SCARICARE I DUE QRCODE...
+          //BOTTONE PER APRIRE, VISUALIZZARE E SCARICARE I DUE QRCODE...
+          $("#details").html("<table width='100%' style='color:#000000;'><tr>" + 
+                             "<td align=center>" + 
+                             "<a onclick=\"iniziaNoleggio('http://service.cloudmup.com/GOALocale/QRCODE/"+calEvent.id+"_on.png');\" class='btn btn-success' >INIZIA NOLEGGIO</a>" + 
+                             "</td>" +
+                             "<td align=center>" + 
+                             "<a onclick=\"chiudiNoleggio('http://service.cloudmup.com/GOALocale/QRCODE/"+calEvent.id+"_off.png');\" class='btn btn-danger' >CHIUDI NOLEGGIO</a>" + 
+                             "</td>" +
+                             "</tr></table>");
+          /********* VISUALIZZAZIONE DI ENTRAMBI I QRCODES...
           $("#details").html("<table width='100%' style='color:#000000;'><tr>" + 
                              "<td align=left><b>QRCODE APERTURA:</b><br>" + 
                              "<a download='"+calEvent.id+"_on.png' " + 
@@ -462,6 +485,7 @@
                              "<img src='http://service.cloudmup.com/GOALocale/QRCODE/"+calEvent.id+"_off.png' />"+
                              "</a></td>" +
                              "</tr></table>");
+          *********/
 
         }
         $('#event_details').modal();
@@ -750,7 +774,7 @@
           DETTAGLI.......: <span id='event_details_objects' ></span><br>
           STATO.......: <span id='event_details_status' ></span><br>
         -->
-        <table class='table_pren' width="100%" style="color:#000000;" >
+        <table id='tabella_dettagli' class='table_pren' width="100%" style="color:#000000;" >
           <tr>
             <td width="50%">
               <label for='upd_depotStartId' >Sede di partenza <font color=red>*</font> </label>
