@@ -116,25 +116,19 @@
     function iniziaNoleggio(path,qrcode){
       console.log("iniziaNoleggio");
       //tabella_dettagli
-      /*
       $("#tabella_dettagli").html("<a download='"+qrcode+"' href='"+path+qrcode+"' target='_blank' >" + 
                                   "  <img src='"+path+qrcode+"' width='100%' />" + 
                                   "</a>");
-      */
-      $("#tabella_dettagli").html("<img src='"+path+qrcode+"' width='100%' />");
-      var ref = cordova.InAppBrowser.open(path+qrode, '_blank', 'location=yes');
+      var ref = cordova.InAppBrowser.open(path+qrcode, '_blank', 'location=yes');
     }
 
     function chiudiNoleggio(path,qrcode){
       console.log("chiudiNoleggio");
       //tabella_dettagli
-      /*
       $("#tabella_dettagli").html("<a download='"+qrcode+"' href='"+path+qrcode+"' target='_blank' >" + 
                                   "  <img src='"+path+qrcode+"' width='100%' />" + 
                                   "</a>");
-      */
-      $("#tabella_dettagli").html("<img src='"+path+qrcode+"' width='100%' />");
-      var ref = cordova.InAppBrowser.open(path+qrode, '_blank', 'location=yes');
+      var ref = cordova.InAppBrowser.open(path+qrcode, '_blank', 'location=yes');
     }
 
   $( function() {
