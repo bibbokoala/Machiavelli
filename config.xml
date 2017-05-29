@@ -123,22 +123,16 @@
     <access origin="*"/>
     <!-- Added the following intents to support the removal of whitelist code from base cordova to a plugin -->
     <!-- Whitelist configuration. Refer to https://cordova.apache.org/docs/en/edge/guide_appdev_whitelist_index.md.html -->
-    <plugin name="cordova-plugin-whitelist" version="1" />
+    <plugin name="cordova-plugin-whitelist"/>
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
     <allow-intent href="tel:*" />
     <allow-intent href="sms:*" />
     <allow-intent href="mailto:*" />
     <allow-intent href="geo:*" />
-    <!-- Wildcards are allowed for the protocol, as a prefix
-     to the host, or as a suffix to the path -->
-    <allow-navigation href="*://*.cloudmup.com/*" />
-<!-- A wildcard can be used to whitelist the entire network,
-     over HTTP and HTTPS.
-     *NOT RECOMMENDED* 
-<allow-navigation href="*" />
-    -->
-    
+    <allow-navigation href="*" />
+
+
 <!-- parametri per scegliere su quale piattaforma compilare:
 <platform name="ios" />
 <platform name="android" />
