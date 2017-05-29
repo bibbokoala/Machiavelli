@@ -113,19 +113,19 @@
 
 
 
-    function iniziaNoleggio(qrcode){
+    function iniziaNoleggio(path,qrcode){
       console.log("iniziaNoleggio");
       //tabella_dettagli
-      $("#tabella_dettagli").html("<a href='"+qrcode+"' target='_blank' >" + 
-                                  "  <img src='"+qrcode+"' width='100%' />" + 
+      $("#tabella_dettagli").html("<a download='"+qrcode+"' href='"+path+qrcode+"' target='_blank' >" + 
+                                  "  <img src='"+path+qrcode+"' width='100%' />" + 
                                   "</a>");
     }
 
-    function chiudiNoleggio(qrcode){
+    function chiudiNoleggio(path,qrcode){
       console.log("chiudiNoleggio");
       //tabella_dettagli
-      $("#tabella_dettagli").html("<a href='"+qrcode+"' target='_blank' >" + 
-                                  "  <img src='"+qrcode+"' width='100%' />" + 
+      $("#tabella_dettagli").html("<a download='"+qrcode+"' href='"+path+qrcode+"' target='_blank' >" + 
+                                  "  <img src='"+path+qrcode+"' width='100%' />" + 
                                   "</a>");
     }
 
@@ -470,10 +470,10 @@
           //BOTTONE PER APRIRE, VISUALIZZARE E SCARICARE I DUE QRCODE...
           $("#details").html("<table width='100%' style='color:#000000;'><tr>" + 
                              "<td align=center>" + 
-                             "<a onclick=\"iniziaNoleggio('http://service.cloudmup.com/GOALocale/QRCODE/"+calEvent.id+"_on.png');\" class='btn btn-success' >INIZIA NOLEGGIO</a>" + 
+                             "<a onclick=\"iniziaNoleggio('http://service.cloudmup.com/GOALocale/QRCODE/','"+calEvent.id+"_on.png');\" class='btn btn-success' >INIZIA NOLEGGIO</a>" + 
                              "</td>" +
                              "<td align=center>" + 
-                             "<a onclick=\"chiudiNoleggio('http://service.cloudmup.com/GOALocale/QRCODE/"+calEvent.id+"_off.png');\" class='btn btn-danger' >CHIUDI NOLEGGIO</a>" + 
+                             "<a onclick=\"chiudiNoleggio('http://service.cloudmup.com/GOALocale/QRCODE/','"+calEvent.id+"_off.png');\" class='btn btn-danger' >CHIUDI NOLEGGIO</a>" + 
                              "</td>" +
                              "</tr></table>");
           /********* VISUALIZZAZIONE DI ENTRAMBI I QRCODES...
