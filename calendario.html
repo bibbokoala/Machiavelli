@@ -116,13 +116,17 @@
     function iniziaNoleggio(qrcode){
       console.log("iniziaNoleggio");
       //tabella_dettagli
-      $("#tabella_dettagli").html("<img src='"+qrcode+"' width='100%' />");
+      $("#tabella_dettagli").html("<a href='"+qrcode+"' target='_blank' >" + 
+                                  "  <img src='"+qrcode+"' width='100%' />" + 
+                                  "</a>");
     }
 
     function chiudiNoleggio(qrcode){
       console.log("chiudiNoleggio");
       //tabella_dettagli
-      $("#tabella_dettagli").html("<img src='"+qrcode+"' width='100%' />");
+      $("#tabella_dettagli").html("<a href='"+qrcode+"' target='_blank' >" + 
+                                  "  <img src='"+qrcode+"' width='100%' />" + 
+                                  "</a>");
     }
 
   $( function() {
