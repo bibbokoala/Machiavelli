@@ -130,6 +130,15 @@
     <allow-intent href="sms:*" />
     <allow-intent href="mailto:*" />
     <allow-intent href="geo:*" />
+    <!-- Wildcards are allowed for the protocol, as a prefix
+     to the host, or as a suffix to the path -->
+    <allow-navigation href="*://*.cloudmup.com/*" />
+<!-- A wildcard can be used to whitelist the entire network,
+     over HTTP and HTTPS.
+     *NOT RECOMMENDED* 
+<allow-navigation href="*" />
+    -->
+    
 <!-- parametri per scegliere su quale piattaforma compilare:
 <platform name="ios" />
 <platform name="android" />
