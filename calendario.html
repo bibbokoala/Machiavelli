@@ -449,6 +449,20 @@
                  $("#details").css("display","block");
              }
           }
+          //BOTTONE PER APRIRE VISUALIZZARE E SCARICARE I DUE QRCODE...
+          $("#details").html("<table width='100%' style='color:#000000;'><tr>" + 
+                             "<td align=left><b>QRCODE APERTURA:</b><br>" + 
+                             "<a download='http://service.cloudmup.com/GOALocale/QRCODE/"+calEvent.id+"_on.png' " + 
+                             " href='http://service.cloudmup.com/GOALocale/QRCODE/"+calEvent.id+"_on.png' title='"+calEvent.id+"_on.png'>"+
+                             "<img src='http://service.cloudmup.com/GOALocale/QRCODE/"+calEvent.id+"_on.png' />"+
+                             "</a></td>" +
+                             "<td align=left><b>QRCODE CHIUSURA:</b><br>" + 
+                             "<a download='http://service.cloudmup.com/GOALocale/QRCODE/"+calEvent.id+"_off.png' " + 
+                             " href='http://service.cloudmup.com/GOALocale/QRCODE/"+calEvent.id+"_off.png' title='"+calEvent.id+"_off.png'>"+
+                             "<img src='http://service.cloudmup.com/GOALocale/QRCODE/"+calEvent.id+"_off.png' />"+
+                             "</a></td>" +
+                             "</tr></table>");
+
         }
         $('#event_details').modal();
       }  //FINE eventClick
