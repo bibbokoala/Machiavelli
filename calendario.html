@@ -111,24 +111,28 @@
   console.log("login: "+localStorage.getItem("login"));
   console.log("link: "+localStorage.getItem("link"));
 
-
+    function openExternal(url){
+      cordova.InAppBrowser.open(path+qrcode, '_system', 'location=yes');
+    }
 
     function iniziaNoleggio(path,qrcode){
       console.log("iniziaNoleggio");
       //tabella_dettagli
-      $("#tabella_dettagli").html("<a download='"+qrcode+"' href='"+path+qrcode+"' target='_blank' >" + 
+      $("#tabella_dettagli").html("<br><center><a onclick=\"openExternal('"+path+qrcode+"');\" class='btn btn-primary' >DOWNLOAD QRCODE</a></center><br>"+
+                                  "<a download='"+qrcode+"' href='"+path+qrcode+"' target='_blank' >" + 
                                   "  <img src='"+path+qrcode+"' width='100%' />" + 
                                   "</a>");
-      var ref = cordova.InAppBrowser.open(path+qrcode, '_system', 'location=yes');
+      //var ref = cordova.InAppBrowser.open(path+qrcode, '_system', 'location=yes');
     }
 
     function chiudiNoleggio(path,qrcode){
       console.log("chiudiNoleggio");
       //tabella_dettagli
-      $("#tabella_dettagli").html("<a download='"+qrcode+"' href='"+path+qrcode+"' target='_blank' >" + 
+      $("#tabella_dettagli").html("<br><center><a onclick=\"openExternal('"+path+qrcode+"');\" class='btn btn-primary' >DOWNLOAD QRCODE</a></center><br>"+ 
+                                  "<a download='"+qrcode+"' href='"+path+qrcode+"' target='_blank' >" + 
                                   "  <img src='"+path+qrcode+"' width='100%' />" + 
                                   "</a>");
-      var ref = cordova.InAppBrowser.open(path+qrcode, '_system', 'location=yes');
+      //var ref = cordova.InAppBrowser.open(path+qrcode, '_system', 'location=yes');
     }
 
   $( function() {
