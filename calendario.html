@@ -26,6 +26,14 @@
     function onLoad() {
         document.addEventListener("deviceready", onDeviceReady, false);
         //alert("onload");
+
+        $('#event_details').on('hidden.bs.modal', function () {
+          //$("#tabella_dettagli").show();
+          document.getElementById('tabella_dettagli').style.display = 'block';
+          document.getElementById('div_qrcode').style.display = 'none';
+          //DEBUG window.alert('CLOSE MODAL - tabella_dettagli: ' + document.getElementById('tabella_dettagli').style.display);
+        });
+
     }
     // Cordova is loaded and it is now safe to make calls Cordova methods
     function onDeviceReady() {
@@ -111,6 +119,13 @@
   console.log("login: "+localStorage.getItem("login"));
   console.log("link: "+localStorage.getItem("link"));
 
+    function checkImage (src, good, bad) {
+      var img = new Image();
+      img.onload = good; 
+      img.onerror = bad;
+      img. src = src;
+    }
+
     function openExternal(url){
       var ref = cordova.InAppBrowser.open(url, '_system', 'location=yes');
     }
@@ -118,20 +133,26 @@
     function iniziaNoleggio(path,qrcode){
       console.log("iniziaNoleggio");
       //tabella_dettagli
-      $("#tabella_dettagli").html("<br><center><a onclick=\"openExternal('"+path+qrcode+"');\" class='btn btn-primary' >DOWNLOAD QRCODE</a></center><br>"+
+      //$("#tabella_dettagli").hide();
+      document.getElementById('tabella_dettagli').style.display = 'none';
+      $("#div_qrcode").html("<br><center><a onclick=\"openExternal('"+path+qrcode+"');\" class='btn btn-primary' >DOWNLOAD QRCODE APERTURA</a></center><br>"+
                                   "<a download='"+qrcode+"' href='"+path+qrcode+"' target='_blank' >" + 
                                   "  <img src='"+path+qrcode+"' width='100%' />" + 
                                   "</a>");
+      document.getElementById('div_qrcode').style.display = 'block';
       //var ref = cordova.InAppBrowser.open(path+qrcode, '_system', 'location=yes');
     }
 
     function chiudiNoleggio(path,qrcode){
       console.log("chiudiNoleggio");
       //tabella_dettagli
-      $("#tabella_dettagli").html("<br><center><a onclick=\"openExternal('"+path+qrcode+"');\" class='btn btn-primary' >DOWNLOAD QRCODE</a></center><br>"+ 
+      //$("#tabella_dettagli").hide();
+      document.getElementById('tabella_dettagli').style.display = 'none';
+      $("#div_qrcode").html("<br><center><a onclick=\"openExternal('"+path+qrcode+"');\" class='btn btn-primary' >DOWNLOAD QRCODE CHIUSURA</a></center><br>"+ 
                                   "<a download='"+qrcode+"' href='"+path+qrcode+"' target='_blank' >" + 
                                   "  <img src='"+path+qrcode+"' width='100%' />" + 
                                   "</a>");
+      document.getElementById('div_qrcode').style.display = 'block';
       //var ref = cordova.InAppBrowser.open(path+qrcode, '_system', 'location=yes');
     }
 
@@ -474,14 +495,28 @@
              }
           }
           //BOTTONE PER APRIRE, VISUALIZZARE E SCARICARE I DUE QRCODE...
-          $("#details").html("<table width='100%' style='color:#000000;'><tr>" + 
-                             "<td align=center>" + 
-                             "<a onclick=\"iniziaNoleggio('http://service.cloudmup.com/GOALocale/QRCODE/','"+calEvent.id+"_on.png');\" class='btn btn-success' >INIZIA NOLEGGIO</a>" + 
-                             "</td>" +
-                             "<td align=center>" + 
-                             "<a onclick=\"chiudiNoleggio('http://service.cloudmup.com/GOALocale/QRCODE/','"+calEvent.id+"_off.png');\" class='btn btn-danger' >CHIUDI NOLEGGIO</a>" + 
-                             "</td>" +
-                             "</tr></table>");
+          checkImage( "http://service.cloudmup.com/GOALocale/QRCODE/"+calEvent.id+"_on.png", 
+                      function(){ 
+                        //DEBUG alert(this.src + " " + "good"); 
+                        $("#details").html("<table width='100%' style='color:#000000;'><tr>" + 
+                                           "<td align=center>" + 
+                                           "<a onclick=\"iniziaNoleggio('http://service.cloudmup.com/GOALocale/QRCODE/','"+calEvent.id+"_on.png');\" " + 
+                                           " class='btn btn-success' >INIZIA NOLEGGIO</a>" + 
+                                           "</td>" +
+                                           "<td align=center>" + 
+                                           "<a onclick=\"chiudiNoleggio('http://service.cloudmup.com/GOALocale/QRCODE/','"+calEvent.id+"_off.png');\" " + 
+                                           " class='btn btn-danger' >CHIUDI NOLEGGIO</a>" + 
+                                           "</td>" +
+                                           "</tr></table>");
+                        document.getElementById('details').style.display = 'block';
+                      }, 
+                      function(){ 
+                        //DEBUG alert("QRCODE NOT EXIST!" + this.src); 
+                        $("#details").html("");
+                        document.getElementById('details').style.display = 'none';
+                      } 
+                    );
+
           /********* VISUALIZZAZIONE DI ENTRAMBI I QRCODES...
           $("#details").html("<table width='100%' style='color:#000000;'><tr>" + 
                              "<td align=left><b>QRCODE APERTURA:</b><br>" + 
@@ -784,6 +819,7 @@
           DETTAGLI.......: <span id='event_details_objects' ></span><br>
           STATO.......: <span id='event_details_status' ></span><br>
         -->
+          <div id='div_qrcode'></div>
         <table id='tabella_dettagli' class='table_pren' width="100%" style="color:#000000;" >
           <tr>
             <td width="50%">
