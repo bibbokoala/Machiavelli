@@ -402,22 +402,38 @@ function statecheck(x, _this) {
 
       function prenota(codice_veicolo, targa){
         //per ora inserito confirm solo per test!
-        confirm("Vuoi prenotare il veicolo: " + codice_veicolo + " - targato: " + targa);
-        /*
-        var url = "http://service.cloudmup.com/GOALocale/MachiavelliInsPren.php";
-        $.ajax({
-          url: url,
-              type: 'POST', // Send post data
-              data: formData,
-              async: false,
-              success: function(s){
-                var result_insert = s;
-                console.log(JSON.stringify(result_insert));
-                //$('#new_event').modal('hide');
-                setTimeout(function(){ window.location = "calendario.html"; }, 1500);
+        if (confirm("Vuoi prenotare il veicolo: " + codice_veicolo + " - targato: " + targa + "?")) {
+          var vehicle_code = codice_veicolo;
+          var utilizzatore = localStorage.getItem("matricola");
+          var url = "http://service.cloudmup.com/GOALocale/MachiavelliInsPrenVista.php?utilizzatore="+utilizzatore+"&vehicle_code="+vehicle_code;
+          //DEBUG alert("url: "+ url);
+          $.ajax({
+            url: url,
+            type: 'POST', // Send post data
+            async: false,
+            success: function(s){
+              var result = JSON.stringify(s);
+              //console.log(result.substring(1, result.length-1));
+              //con la substring tolgo le due parentesi quadre ad inizio e fine stringa...
+              var obj = JSON.parse(result.substring(1, result.length-1));
+              console.log("result: " + obj.result + " - id_pren: " + obj.id_pren);
+              alert("result: " + obj.result + " - id_pren: " + obj.id_pren);
+              /*RITORNI POSIBILI:
+                ResOk=setFrom(@'OK');
+                ResKo=setFrom(@'KO:SYSTEM ERROR');
+                ResKo=setFrom(@'KO:BOOKING '||IN.bookId||' NOT FOUND');
+                ResKo=setFrom(@'KO:NON DISPONIBILE');
+              */
+              if (obj.result=='OK'){
+                setTimeout(function(){ window.location = "calendario.html"; }, 1000);
               }
-        });
-        */
+              else{
+                alert("ERRORE: " + obj.result);
+                setTimeout(function(){ window.location = "mappa.html"; }, 1000);
+              }
+            }
+          });
+        }
       }
 
       function initMap(position) {
