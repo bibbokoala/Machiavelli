@@ -417,14 +417,8 @@ function statecheck(x, _this) {
               //con la substring tolgo le due parentesi quadre ad inizio e fine stringa...
               var obj = JSON.parse(result.substring(1, result.length-1));
               console.log("result: " + obj.result + " - id_pren: " + obj.id_pren);
-              alert("result: " + obj.result + " - id_pren: " + obj.id_pren);
-              /*RITORNI POSIBILI:
-                ResOk=setFrom(@'OK');
-                ResKo=setFrom(@'KO:SYSTEM ERROR');
-                ResKo=setFrom(@'KO:BOOKING '||IN.bookId||' NOT FOUND');
-                ResKo=setFrom(@'KO:NON DISPONIBILE');
-              */
-              if (obj.result=='true'){
+              //DEBUG alert("result: " + obj.result + " - id_pren: " + obj.id_pren);
+              if (obj.result=='OK'){
                 setTimeout(function(){ window.location = "calendario.html"; }, 1000);
               }
               else{
