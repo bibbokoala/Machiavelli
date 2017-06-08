@@ -272,6 +272,32 @@
 
     });
 
+
+    $("#btn_chiudi_pren").click(function(){
+      console.log("btn_chiudi_pren");
+      var booking_id = $("#booking_id").val();
+      var vehicle_code = $("#upd_veic_disp").val();
+      //alert("booking_id: " + booking_id);
+      if ( (booking_id==null)||
+           (booking_id.localeCompare("")==0) )
+      {
+        return false;
+      }
+      var url = "http://service.cloudmup.com/GOALocale/MachiavelliChiusura.php?booking_id="+booking_id+"&vehicle_code="+vehicle_code;
+      if (confirm("Vuoi chiudere la prenotazione: " + booking_id + " - sul veicolo: " + vehicle_code + "?")) {
+        $.ajax({
+          url: url,
+              type: 'POST', // Send post data
+              async: false,
+              success: function(s){
+                var result_del = s;
+                console.log(JSON.stringify(result_del));
+                setTimeout(function(){ window.location = "calendario.html"; }, 1500);
+              }
+        });
+      }
+    });
+
     $("#btn_upd_pren").click(function(){
       console.log("btn_upd_pren");
       var booking_id = $("#booking_id").val();
@@ -489,28 +515,30 @@
                  (status.localeCompare("appins")==0) ||
                  (status.localeCompare("ATTESA PICKUP")==0) ||
                  (status.localeCompare("IN USO")==0) ){
-                 //MAURIZIO MI HA CHIESTO DI METTERE UN QRCODE FISSO!!!
-                 //PATH pagine PHP /opt/web su surak
-                 //$("#details").html("<img src='pics/qrcode_default.png' width='100%' />");
                  //path server TELECOM
-                 $("#details").html("<img src='http://service.cloudmup.com/GOALocale/QRCODE/" + calEvent.id + ".png' width='100%' />");
+                 //$("#details").html("<img src='http://service.cloudmup.com/GOALocale/QRCODE/" + calEvent.id + ".png' width='100%' />");
                  $("#details").css("display","block");
              }
+             if( (status.localeCompare("MANCATO PICKUP")==0) ||
+                 (status.localeCompare("IN USO")==0) ){
+                $("#btn_chiudi_pren").css("display","block");
+             }
           }
+          //SE ATTESA PICKUP DEVO FAR VISUALIZZARE IL QRCODE DI APERTURA
+          //SE IN USO DEVO VISUALIZZARE IL QRCODE DI CHIUSURA 
           //BOTTONE PER APRIRE, VISUALIZZARE E SCARICARE I DUE QRCODE...
           checkImage( "http://service.cloudmup.com/GOALocale/QRCODE/"+calEvent.id+"_on.png", 
                       function(){ 
+                        $("#details").html("");
                         //DEBUG alert(this.src + " " + "good"); 
-                        $("#details").html("<table width='100%' style='color:#000000;'><tr>" + 
-                                           "<td align=center>" + 
-                                           "<a onclick=\"iniziaNoleggio('http://service.cloudmup.com/GOALocale/QRCODE/','"+calEvent.id+"_on.png');\" " + 
-                                           " class='btn btn-success' >INIZIA NOLEGGIO</a>" + 
-                                           "</td>" +
-                                           "<td align=center>" + 
-                                           "<a onclick=\"chiudiNoleggio('http://service.cloudmup.com/GOALocale/QRCODE/','"+calEvent.id+"_off.png');\" " + 
-                                           " class='btn btn-danger' >CHIUDI NOLEGGIO</a>" + 
-                                           "</td>" +
-                                           "</tr></table>");
+                        if(status.localeCompare("ATTESA PICKUP")==0){
+                          $("#details").html("<a onclick=\"iniziaNoleggio('http://service.cloudmup.com/GOALocale/QRCODE/','"+calEvent.id+"_on.png');\" " + 
+                                             " class='btn btn-success' >INIZIO NOLEGGIO</a>");
+                        }
+                        if(status.localeCompare("IN USO")==0){
+                          $("#details").html("<a onclick=\"chiudiNoleggio('http://service.cloudmup.com/GOALocale/QRCODE/','"+calEvent.id+"_off.png');\" " + 
+                                             " class='btn btn-danger' >FINE NOLEGGIO</a>");
+                        }
                         document.getElementById('details').style.display = 'block';
                       }, 
                       function(){ 
@@ -519,21 +547,6 @@
                         document.getElementById('details').style.display = 'none';
                       } 
                     );
-
-          /********* VISUALIZZAZIONE DI ENTRAMBI I QRCODES...
-          $("#details").html("<table width='100%' style='color:#000000;'><tr>" + 
-                             "<td align=left><b>QRCODE APERTURA:</b><br>" + 
-                             "<a download='"+calEvent.id+"_on.png' " + 
-                             " href='http://service.cloudmup.com/GOALocale/QRCODE/"+calEvent.id+"_on.png' title='"+calEvent.id+"_on.png'>"+
-                             "<img src='http://service.cloudmup.com/GOALocale/QRCODE/"+calEvent.id+"_on.png' />"+
-                             "</a></td>" +
-                             "<td align=left><b>QRCODE CHIUSURA:</b><br>" + 
-                             "<a download='"+calEvent.id+"_off.png' " + 
-                             " href='http://service.cloudmup.com/GOALocale/QRCODE/"+calEvent.id+"_off.png' title='"+calEvent.id+"_off.png'>"+
-                             "<img src='http://service.cloudmup.com/GOALocale/QRCODE/"+calEvent.id+"_off.png' />"+
-                             "</a></td>" +
-                             "</tr></table>");
-          *********/
 
         }
         $('#event_details').modal();
@@ -632,9 +645,9 @@
 
       <!-- BUTTON FOR TOGGLE LEFT MENU -->
       <button type="button" class="navbar-toggle" data-toggle="offcanvas" data-target=".sidebar-nav">
-       <span class="icon-bar" style="background-color: #004691;"></span>
-       <span class="icon-bar" style="background-color: #004691;"></span>
-       <span class="icon-bar" style="background-color: #004691;"></span>
+       <span class="icon-bar" style="background-color: #FFF;"></span>
+       <span class="icon-bar" style="background-color: #FFF;"></span>
+       <span class="icon-bar" style="background-color: #FFF;"></span>
       </button>
           </div>
           <div class="navbar-header" style="line-height: 56px;" id="testata" >
@@ -934,6 +947,9 @@
           <input type="hidden" id="booking_id" name="booking_id" value="" />
           <button type="button" class="btn btn-danger" id="btn_del_pren" data-dismiss="modal">
             <span class="glyphicon glyphicon-cancel"></span> Cancella
+          </button>
+          <button type="button" class="btn btn-danger pull-left" id="btn_chiudi_pren" data-dismiss="modal" style="display:none;">
+            <span class="glyphicon glyphicon-cancel"></span> Chiudi Prenotazione
           </button>
           <button type="button" class="btn btn-primary" id="btn_upd_pren" data-dismiss="modal">
             <span class="glyphicon glyphicon-pencil"></span> Modifica

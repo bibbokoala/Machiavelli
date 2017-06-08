@@ -424,7 +424,7 @@ function statecheck(x, _this) {
                 ResKo=setFrom(@'KO:BOOKING '||IN.bookId||' NOT FOUND');
                 ResKo=setFrom(@'KO:NON DISPONIBILE');
               */
-              if (obj.result=='OK'){
+              if (obj.result=='true'){
                 setTimeout(function(){ window.location = "calendario.html"; }, 1000);
               }
               else{
